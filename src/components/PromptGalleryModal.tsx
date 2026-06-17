@@ -180,6 +180,20 @@ export default function PromptGalleryModal() {
               </aside>
 
               <div className="flex min-w-0 flex-1 flex-col">
+                <div className="flex shrink-0 border-b border-[#333] bg-[#1e1e1e] px-4 py-2 sm:hidden">
+                  <select
+                    value={activeId}
+                    onChange={(event) => setActiveId(event.target.value)}
+                    className="w-full rounded-md border border-[#3c3c3c] bg-[#252526] px-2 py-1.5 text-[12px] text-[#cccccc]"
+                  >
+                    {promptEntries.map((entry) => (
+                      <option key={entry.id} value={entry.id}>
+                        {entry.title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
                 <div className="flex shrink-0 items-center gap-2 border-b border-[#333] bg-[#1e1e1e] px-4 py-2">
                   <span className="rounded bg-[#264f78] px-2 py-0.5 text-[11px] text-[#9cdcfe]">
                     prompt.md
