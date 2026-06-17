@@ -2,6 +2,9 @@
 
 import Sidebar from "@/components/Sidebar";
 import ChatWindow from "@/components/ChatWindow";
+import PromptGalleryModal from "@/components/PromptGalleryModal";
+import VideoPlayerModal from "@/components/VideoPlayerModal";
+import { ModalProvider } from "@/context/ModalContext";
 import { ThemeProvider, useTheme } from "@/context/ThemeContext";
 import type { Conversation, Message } from "@/types/message";
 
@@ -37,6 +40,9 @@ function IMessageShell({
         />
         <ChatWindow conversation={activeConversation} messages={messages} />
       </div>
+
+      <VideoPlayerModal />
+      <PromptGalleryModal />
     </div>
   );
 }
@@ -44,7 +50,9 @@ function IMessageShell({
 export default function IMessageLayout(props: IMessageLayoutProps) {
   return (
     <ThemeProvider>
-      <IMessageShell {...props} />
+      <ModalProvider>
+        <IMessageShell {...props} />
+      </ModalProvider>
     </ThemeProvider>
   );
 }

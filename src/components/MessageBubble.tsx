@@ -3,6 +3,9 @@
 import { motion } from "framer-motion";
 import type { Message } from "@/types/message";
 import { SENDER_LABELS } from "@/types/message";
+import ImageAttachmentBubble from "@/components/ImageAttachmentBubble";
+import VideoAttachmentBubble from "@/components/VideoAttachmentBubble";
+import { useModal } from "@/context/ModalContext";
 import { useTheme } from "@/context/ThemeContext";
 
 type MessageBubbleProps = {
@@ -18,9 +21,16 @@ function MessageText({
   isMe: boolean;
 }) {
   const { colors } = useTheme();
+  const { openPromptGallery } = useModal();
 
   if (message.textWithClickTarget) {
     const { before, clickTarget, after } = message.textWithClickTarget;
+
+    const handleClick = () => {
+      if (clickTarget.action.type === "prompt-gallery-modal") {
+        openPromptGallery();
+      }
+    };
 
     return (
       <p className="whitespace-pre-wrap break-words text-[15px] leading-[1.35]">
@@ -34,9 +44,7 @@ function MessageText({
               ? "rgba(255,255,255,0.5)"
               : `${colors.link}66`,
           }}
-          onClick={() => {
-            console.log("click target:", clickTarget.action);
-          }}
+          onClick={handleClick}
         >
           {clickTarget.label}
         </button>
@@ -57,68 +65,12 @@ function MessageText({
 }
 
 function MessageMedia({ message }: { message: Message }) {
-  const { colors } = useTheme();
-
   if (message.video) {
-    return (
-      <div className="mt-1 overflow-hidden rounded-2xl">
-        <div className="relative aspect-video w-full min-w-[220px] max-w-[320px] bg-black/20">
-          <video
-            className="h-full w-full object-cover"
-            src={message.video.src}
-            poster={message.video.thumbnail}
-            controls
-            preload="metadata"
-          >
-            <track kind="captions" />
-          </video>
-        </div>
-        {message.video.title ? (
-          <p
-            className="mt-1.5 px-1 text-[12px]"
-            style={{ color: colors.muted }}
-          >
-            {message.video.title}
-          </p>
-        ) : null}
-      </div>
-    );
+    return <VideoAttachmentBubble video={message.video} />;
   }
 
   if (message.image) {
-    return (
-      <div className="mt-1 space-y-2">
-        <div
-          className={[
-            "grid gap-1 overflow-hidden rounded-2xl",
-            message.image.images.length > 1 ? "grid-cols-2" : "grid-cols-1",
-          ].join(" ")}
-        >
-          {message.image.images.map((image) => (
-            <div
-              key={image.src}
-              className="relative aspect-[4/3]"
-              style={{ backgroundColor: colors.theirBubble }}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={image.src}
-                alt={image.alt}
-                className="h-full w-full object-cover"
-              />
-            </div>
-          ))}
-        </div>
-        {message.image.caption ? (
-          <p
-            className="px-1 text-[13px] leading-snug"
-            style={{ color: colors.muted }}
-          >
-            {message.image.caption}
-          </p>
-        ) : null}
-      </div>
-    );
+    return <ImageAttachmentBubble image={message.image} />;
   }
 
   return null;

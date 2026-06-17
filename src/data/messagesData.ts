@@ -1,4 +1,8 @@
 import type { Conversation, Message } from "@/types/message";
+import { loomShareUrl, loomThumbnailUrl } from "@/lib/loom";
+
+const LOOM_INTRO_ID = "4287b0e0f9b745339206340682040106";
+const LOOM_PROJECT_ID = "40049d7eb1f942fb9324b32b7df7b1e1";
 
 export const conversation: Conversation = {
   id: "vvd-product-engineer",
@@ -44,8 +48,8 @@ export const messages: Message[] = [
     id: "msg-007",
     sender: "me",
     video: {
-      src: "/media/loom-intro.mp4",
-      thumbnail: "/media/loom-intro-thumb.jpg",
+      shareUrl: loomShareUrl(LOOM_INTRO_ID),
+      thumbnail: loomThumbnailUrl(LOOM_INTRO_ID),
       provider: "loom",
       title: "Quick intro — crash course",
     },
@@ -76,12 +80,12 @@ export const messages: Message[] = [
     image: {
       images: [
         {
-          src: "/media/harry-potter-collection.jpg",
-          alt: "Harry Potter book collection",
+          src: "/media/harry-potter-boxset.png",
+          alt: "Harry Potter complete collection boxset",
         },
         {
-          src: "/media/hogwarts-miniature.jpg",
-          alt: "Miniature Hogwarts model",
+          src: "/media/hogwarts-miniature.png",
+          alt: "Miniature Hogwarts castle model",
         },
       ],
       caption:
@@ -147,9 +151,9 @@ export const messages: Message[] = [
     id: "msg-024",
     sender: "me",
     video: {
-      src: "/media/3d-allocations-walkthrough.mp4",
-      thumbnail: "/media/3d-allocations-thumb.jpg",
-      provider: "custom",
+      shareUrl: loomShareUrl(LOOM_PROJECT_ID),
+      thumbnail: loomThumbnailUrl(LOOM_PROJECT_ID),
+      provider: "loom",
       title: "3D Allocations project walkthrough",
     },
   },

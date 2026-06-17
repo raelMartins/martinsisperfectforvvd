@@ -7,7 +7,12 @@ export const SENDER_LABELS: Record<Sender, string> = {
 };
 
 export type VideoAttachment = {
-  src: string;
+  /** Direct video file for custom uploads */
+  src?: string;
+  /** Embed URL (e.g. Loom iframe) */
+  embedUrl?: string;
+  /** Original share link */
+  shareUrl?: string;
   thumbnail?: string;
   provider?: "loom" | "custom";
   title?: string;
@@ -55,4 +60,11 @@ export type Conversation = {
   lastPreview: string;
   lastTimestamp: string;
   unread?: boolean;
+};
+
+export type VideoModalPayload = {
+  embedUrl: string;
+  title?: string;
+  shareUrl?: string;
+  thumbnail?: string;
 };
