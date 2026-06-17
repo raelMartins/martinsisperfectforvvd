@@ -12,6 +12,7 @@ import type { Conversation, Message, Sender } from "@/types/message";
 import MessageBubble from "@/components/MessageBubble";
 import ThemeToggle from "@/components/ThemeToggle";
 import TypingIndicator from "@/components/TypingIndicator";
+import { useMotion } from "@/context/MotionContext";
 import { useTheme } from "@/context/ThemeContext";
 
 const TYPING_DURATION_MS = 800;
@@ -37,6 +38,7 @@ export default function ChatWindow({
   messages,
 }: ChatWindowProps) {
   const { colors } = useTheme();
+  const { setScrollMetrics } = useMotion();
   const scrollRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -135,6 +137,20 @@ export default function ChatWindow({
     requestAnimationFrame(() => scrollToBottom("auto"));
   }, [revealedCount, isTyping, scrollToBottom]);
 
+  const updateScrollMotion = useCallback(() => {
+    const container = scrollRef.current;
+    if (!container) return;
+    setScrollMetrics(
+      container.scrollTop,
+      container.scrollHeight,
+      container.clientHeight,
+    );
+  }, [setScrollMetrics]);
+
+  useEffect(() => {
+    updateScrollMotion();
+  }, [revealedCount, isTyping, updateScrollMotion]);
+
   const handleUserScrollIntent = useCallback(() => {
     if (isAutoScrollingRef.current) return;
     userScrolledRef.current = true;
@@ -143,10 +159,11 @@ export default function ChatWindow({
 
   const handleScroll = useCallback(
     (_event: UIEvent<HTMLDivElement>) => {
+      updateScrollMotion();
       if (isAutoScrollingRef.current) return;
       tryRevealNext();
     },
-    [tryRevealNext],
+    [tryRevealNext, updateScrollMotion],
   );
 
   const visibleMessages = messages.slice(0, revealedCount);
