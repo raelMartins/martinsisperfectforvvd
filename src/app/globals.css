@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+:root {
+  --imessage-blue: #007aff;
+  --imessage-gray: #e9e9eb;
+  --imessage-sidebar: #f6f6f6;
+  --imessage-text: #1d1d1f;
+  --imessage-muted: #8e8e93;
+}
+
+@theme inline {
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+    "Helvetica Neue", Arial, sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  color: var(--imessage-text);
+  background: #ececec;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
