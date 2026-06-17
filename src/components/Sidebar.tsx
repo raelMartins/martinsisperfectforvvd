@@ -1,4 +1,7 @@
+"use client";
+
 import type { Conversation } from "@/types/message";
+import { useTheme } from "@/context/ThemeContext";
 
 type SidebarProps = {
   conversations: Conversation[];
@@ -22,10 +25,24 @@ function Avatar({ label }: { label: string }) {
 }
 
 export default function Sidebar({ conversations, activeId }: SidebarProps) {
+  const { colors } = useTheme();
+
   return (
-    <aside className="flex h-full w-[min(100%,320px)] shrink-0 flex-col border-r border-black/10 bg-[#f6f6f6]">
-      <header className="flex h-[52px] shrink-0 items-center border-b border-black/10 px-4">
-        <h1 className="text-[15px] font-semibold tracking-tight text-[#1d1d1f]">
+    <aside
+      className="flex h-full w-[min(100%,320px)] shrink-0 flex-col border-r"
+      style={{
+        backgroundColor: colors.sidebarBg,
+        borderColor: colors.border,
+      }}
+    >
+      <header
+        className="flex h-[52px] shrink-0 items-center border-b px-4"
+        style={{ borderColor: colors.border }}
+      >
+        <h1
+          className="text-[15px] font-semibold tracking-tight"
+          style={{ color: colors.text }}
+        >
           Messages
         </h1>
       </header>
@@ -39,12 +56,11 @@ export default function Sidebar({ conversations, activeId }: SidebarProps) {
               <li key={conversation.id}>
                 <button
                   type="button"
-                  className={[
-                    "flex w-full items-center gap-3 px-3 py-2.5 text-left transition-colors",
-                    isActive
-                      ? "bg-[#007AFF] text-white"
-                      : "text-[#1d1d1f] hover:bg-black/[0.04]",
-                  ].join(" ")}
+                  className="flex w-full items-center gap-3 px-3 py-2.5 text-left transition-colors"
+                  style={{
+                    backgroundColor: isActive ? colors.activeRow : "transparent",
+                    color: isActive ? "#FFFFFF" : colors.text,
+                  }}
                 >
                   <Avatar label={conversation.title} />
                   <div className="min-w-0 flex-1">
@@ -53,19 +69,19 @@ export default function Sidebar({ conversations, activeId }: SidebarProps) {
                         {conversation.title}
                       </span>
                       <span
-                        className={[
-                          "shrink-0 text-[12px]",
-                          isActive ? "text-white/80" : "text-[#8e8e93]",
-                        ].join(" ")}
+                        className="shrink-0 text-[12px]"
+                        style={{
+                          color: isActive ? "rgba(255,255,255,0.8)" : colors.muted,
+                        }}
                       >
                         {conversation.lastTimestamp}
                       </span>
                     </div>
                     <p
-                      className={[
-                        "truncate text-[13px]",
-                        isActive ? "text-white/90" : "text-[#8e8e93]",
-                      ].join(" ")}
+                      className="truncate text-[13px]"
+                      style={{
+                        color: isActive ? "rgba(255,255,255,0.9)" : colors.muted,
+                      }}
                     >
                       {conversation.lastPreview}
                     </p>

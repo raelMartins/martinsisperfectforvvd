@@ -1,14 +1,24 @@
 "use client";
 
+import { motion } from "framer-motion";
 import type { Message } from "@/types/message";
 import { SENDER_LABELS } from "@/types/message";
+import { useTheme } from "@/context/ThemeContext";
 
 type MessageBubbleProps = {
   message: Message;
   showSenderName?: boolean;
 };
 
-function MessageText({ message }: { message: Message }) {
+function MessageText({
+  message,
+  isMe,
+}: {
+  message: Message;
+  isMe: boolean;
+}) {
+  const { colors } = useTheme();
+
   if (message.textWithClickTarget) {
     const { before, clickTarget, after } = message.textWithClickTarget;
 
@@ -17,9 +27,14 @@ function MessageText({ message }: { message: Message }) {
         {before}
         <button
           type="button"
-          className="font-medium text-[#007AFF] underline decoration-[#007AFF]/40 underline-offset-2 hover:decoration-[#007AFF]"
+          className="font-medium underline underline-offset-2"
+          style={{
+            color: isMe ? colors.meText : colors.link,
+            textDecorationColor: isMe
+              ? "rgba(255,255,255,0.5)"
+              : `${colors.link}66`,
+          }}
           onClick={() => {
-            // Modal gallery wired up in a follow-up pass
             console.log("click target:", clickTarget.action);
           }}
         >
@@ -42,10 +57,12 @@ function MessageText({ message }: { message: Message }) {
 }
 
 function MessageMedia({ message }: { message: Message }) {
+  const { colors } = useTheme();
+
   if (message.video) {
     return (
       <div className="mt-1 overflow-hidden rounded-2xl">
-        <div className="relative aspect-video w-full min-w-[220px] max-w-[320px] bg-black/5">
+        <div className="relative aspect-video w-full min-w-[220px] max-w-[320px] bg-black/20">
           <video
             className="h-full w-full object-cover"
             src={message.video.src}
@@ -57,7 +74,10 @@ function MessageMedia({ message }: { message: Message }) {
           </video>
         </div>
         {message.video.title ? (
-          <p className="mt-1.5 px-1 text-[12px] text-[#8e8e93]">
+          <p
+            className="mt-1.5 px-1 text-[12px]"
+            style={{ color: colors.muted }}
+          >
             {message.video.title}
           </p>
         ) : null}
@@ -77,7 +97,8 @@ function MessageMedia({ message }: { message: Message }) {
           {message.image.images.map((image) => (
             <div
               key={image.src}
-              className="relative aspect-[4/3] bg-[#e9e9eb]"
+              className="relative aspect-[4/3]"
+              style={{ backgroundColor: colors.theirBubble }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -89,7 +110,10 @@ function MessageMedia({ message }: { message: Message }) {
           ))}
         </div>
         {message.image.caption ? (
-          <p className="px-1 text-[13px] leading-snug text-[#636366]">
+          <p
+            className="px-1 text-[13px] leading-snug"
+            style={{ color: colors.muted }}
+          >
             {message.image.caption}
           </p>
         ) : null}
@@ -104,6 +128,7 @@ export default function MessageBubble({
   message,
   showSenderName = false,
 }: MessageBubbleProps) {
+  const { colors } = useTheme();
   const isMe = message.sender === "me";
   const hasText = Boolean(message.text || message.textWithClickTarget);
   const hasMedia = Boolean(message.video || message.image);
@@ -113,11 +138,19 @@ export default function MessageBubble({
   }
 
   return (
-    <div
-      className={[
-        "flex w-full",
-        isMe ? "justify-end" : "justify-start",
-      ].join(" ")}
+    <motion.div
+      layout
+      initial={{ opacity: 0, y: 14, scale: 0.96 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{
+        type: "spring",
+        stiffness: 420,
+        damping: 28,
+        mass: 0.8,
+      }}
+      className={["flex w-full", isMe ? "justify-end" : "justify-start"].join(
+        " ",
+      )}
     >
       <div
         className={[
@@ -126,7 +159,10 @@ export default function MessageBubble({
         ].join(" ")}
       >
         {showSenderName && !isMe ? (
-          <span className="mb-1 px-3 text-[12px] font-medium text-[#8e8e93]">
+          <span
+            className="mb-1 px-3 text-[12px] font-medium"
+            style={{ color: colors.muted }}
+          >
             {SENDER_LABELS[message.sender]}
           </span>
         ) : null}
@@ -135,15 +171,14 @@ export default function MessageBubble({
           <div
             className={[
               "rounded-[20px] px-3.5 py-2",
-              isMe
-                ? "rounded-br-md bg-[#007AFF] text-white"
-                : "rounded-bl-md bg-[#e9e9eb] text-[#1d1d1f]",
-              message.textWithClickTarget && isMe
-                ? "[&_button]:text-white [&_button]:decoration-white/50"
-                : "",
+              isMe ? "rounded-br-md" : "rounded-bl-md",
             ].join(" ")}
+            style={{
+              backgroundColor: isMe ? colors.meBubble : colors.theirBubble,
+              color: isMe ? colors.meText : colors.theirText,
+            }}
           >
-            <MessageText message={message} />
+            <MessageText message={message} isMe={isMe} />
           </div>
         ) : null}
 
@@ -153,6 +188,6 @@ export default function MessageBubble({
           </div>
         ) : null}
       </div>
-    </div>
+    </motion.div>
   );
 }
