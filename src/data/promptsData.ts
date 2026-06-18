@@ -2,53 +2,193 @@ export type PromptEntry = {
   id: string;
   title: string;
   phase: string;
-  content: string;
-  /** Placeholder for future screenshot assets */
-  screenshotSrc?: string;
+  /** High-level blueprint summary for the middle pane. */
+  blueprint: string;
+  /** Exact conversational prompt text for the right pane. */
+  rawPrompt: string;
 };
 
 export const promptEntries: PromptEntry[] = [
   {
-    id: "prompt-001",
-    title: "Scaffold iMessage layout",
-    phase: "Foundation",
-    content: `Build a clean single-page Next.js app that looks exactly like an iOS/macOS iMessage window on desktop using Tailwind.
-
-Requirements:
-- Sidebar on the left (macOS message list style)
-- Main chat window for the rest of the screen
-- No global scroll — only the message container scrolls
-- Strongly typed messagesData.ts with sender (me, Zied, Haseeb), text, video, image, and custom click targets
-- Encode the full Product Engineer introduction dialogue`,
+    "id": "prompt-001",
+    "title": "Scaffold iMessage layout",
+    "phase": "Foundation",
+    "blueprint": "Goals:\n- Single-page Next.js app mimicking iOS/macOS iMessage on desktop\n- Tailwind styling with sidebar + main chat window\n- No global scroll — only the message container scrolls\n- Strongly typed messagesData.ts (senders: me, Zied, Haseeb)\n- Support text, video, image, and custom click targets\n- Encode the full Product Engineer introduction dialogue for VVD",
+    "rawPrompt": "Hey Cursor! I got a pretty big task for you today. I want to build a really clean single-page Next.js app that looks exactly like an iOS/macOS iMessage window on desktop. I want to use Tailwind for styles.\n\nTo start, let's scaffold the main layout. I need a sidebar on the left that looks like a macOS message list, and the main chat window taking up the rest of the screen. Make sure the screen layout doesn't scroll globally—only the actual message container should handle scrolling when it gets full.\n\nAlso, let's set up a messagesData.ts file to hold the whole conversation. I want it strongly typed with TypeScript. Each message should know who sent it (me, Zied, or Haseeb), what the text is, and if it includes a video, an image, or a custom click target.\n\nHere is the entire script we are using for the chat. Please turn this exact dialogue into our data array:\n\n***********************************************************************************************\n\nMe: Hey guys! Heard you were looking for a Product Engineer?\n\nZied: Yes...and you are...?\n\nMe: My bad.  I guess I should introduce myself. I'm Martins, and I'm pretty sure I'm exactly what you're looking for.\n\nZied: Okay. Bold. Hi Martins. Still not an introduction though.\n\nMe: 😂Fair enough. How bout this. I'll just send you a quick lil video. Give you the crash course. What do you think?\n\nZied: Sure. Why not\n\n***Insert Loom Video Here***\n\nHaseeb: Alright Martins. Nice to meet you! Thing is, there's a whole world of developers out there. What makes you, as you put it, \"exactly what we're looking for\"?\n\nMe: I know. Big statement to make, I know. But hang with me for a second.\nMe: Remember how I said I absolutely love Harry Potter. \nZied: Yeah...?\n\n*** Insert Photo of My Harry Potter Book Collection, and Miniature Hogwarts model*** caption (Keeping this boxset as a collector's item. And yes, that's a miniature Hogwarts model.)\n\nMe: Well, I have nearly the same amount of love for Percy Jackson. And the Throne of  Glass series.\nMe: and Twilight (never picked a team. But if I had to, probably Jacob)\nMe: and the princess diaries, Game of Thrones, the vampire diaries... you get the idea😂.\nMe: point is, I'm a sucker for immersion. I love being able to pick up any piece of fiction, book, tv show... anything. And then get lost in it. It is one of life's greatest pleasures. Being able to transport myself into a different world is so freeing. \n\nHaseeb: I hear you.\n\nMe: You know the movie Ready player one?\n\nHaseeb: Uh huh.\n\nMe: That is the dream. Building worlds where people can step back from reality, explore, and just be whoever they want to be. That sounds like bliss to me. I'm writing all this to say: I see the vision vvd is chasing, and I'm already right there with you.\n\nZied: Okay... okay. I hear you. That all sounds pretty good. We're on similar wavelengths here. But now I gotta know. Can you build.\n\nme: Glad you asked. Another video incoming.\n\nZied: Lol, okay. Let's see this😂.\n\n*** Insert a Video Walking them through a project i worked on, probably the 3d allocations Project ***\n\nMe: What do you think?\n\nHaseeb: Okay, that's a seriously impressive architecture.\n\nMe: Thanks😊. Wanna guess what technologies it was built with? \n\nZied: I was literally just about to ask😂. \n\nMe: Great minds... And if you'd guessed, TypeScript with React, NextJS and ThreeJS, all using Cursor, you'd be right.\n\nZied: Okay that's awesome. Our exact stack!\n\nMe: Yup. Last little cherry on top. this entire chat interface we're using right now? Built with that exact same setup. In fact, you can view every single prompt and architectural decision I used to spin up this site right *here* [ \"here\" opens up a beautiful modal gallery of your Cursor prompt history ]\n\nHaseeb: I've seen enough. We'll be in touch!\n\nMe: 😂I love the sound of that."
   },
   {
-    id: "prompt-002",
-    title: "Scroll reveals & typing indicator",
-    phase: "Interaction",
-    content: `Use Framer Motion to animate message bubbles. Reveal messages one-by-one as the user scrolls.
-
-- Show iOS three-dot typing indicator for ~800ms before Zied/Haseeb messages
-- Auto-scroll to bottom on each new bubble
-- Dark mode default: bg #0B0B0C, my bubbles #0A84FF, theirs #262629
-- Light mode toggle: bg #F2F2F7, my bubbles #007AFF, theirs #E5E5EA`,
+    "id": "prompt-002",
+    "title": "Scroll reveals & typing indicator",
+    "phase": "Interaction",
+    "blueprint": "Goals:\n- Framer Motion bubble reveal on scroll (one-by-one, not all at once)\n- iOS three-dot typing indicator ~800ms before Zied/Haseeb messages\n- Auto-scroll to bottom as new bubbles appear\n- Dark mode default (#0B0B0C, blue me bubbles, grey theirs)\n- Light mode toggle in the UI",
+    "rawPrompt": "Awesome, that structure looks great. Now let's make this thread feel like a real conversation as the user scrolls.\n\nLet's use Framer Motion to animate the bubbles coming in. I don't want all the text to dump on the screen at once. As the user scrolls, let's reveal the messages one by one.\n\nTo make it feel super authentic, whenever a message from Zied or Haseeb is up next, show that classic bouncing iOS three-dots typing indicator bubble for about 800ms before swapping it out for their actual text. And every time a new bubble pops in, let's smoothly auto-scroll the window to the bottom so the active conversation stays in view.\n\nFor colors: let's build it in dark mode by default. Give it a deep, premium background like #0B0B0C. My bubbles should be Apple system blue (#0A84FF) with white text, and their bubbles should be #262629. But let's also add a clean toggle button somewhere in the UI so they can switch to light mode if they want! For light mode, make the background #F2F2F7, my bubbles #007AFF, and theirs #E5E5EA."
   },
   {
-    id: "prompt-003",
-    title: "Media attachments & prompt gallery",
-    phase: "Media & modals",
-    content: `Style video containers like native iMessage attachments with rounded corners and play overlay. Click scales into a fullscreen Framer Motion modal (Loom embeds).
-
-Harry Potter image bubble with native caption underneath (boxset + Hogwarts miniature).
-
-"here" link opens a developer IDE-style prompt gallery modal with screenshot slots and PDF export of all prompts.`,
+    "id": "prompt-003",
+    "title": "Media attachments & Loom videos",
+    "phase": "Media & modals",
+    "blueprint": "Goals:\n- iMessage-style video attachment bubbles with rounded corners + play overlay\n- Fullscreen Framer Motion modal for Loom embeds\n- Harry Potter image attachments with native captions\n- \"here\" click target opens IDE-style Prompt History modal\n- PDF / txt export of prompt history",
+    "rawPrompt": "Nice nice. Looking good. Let's tackle the media items in the chat array now.\n\nFor the two Loom videos, I don't want a generic video player blocking the layout. Can we style the video containers to look exactly like video attachments inside an iMessage thread? Give them rounded corners and a clean play button overlay. When they click the video, use Framer Motion to smoothly scale it up into a beautiful overlay modal so they can watch it full screen. Also use these two loom links for now. i'll replace them later. \n\nhttps://www.loom.com/share/4287b0e0f9b745339206340682040106 \nhttps://www.loom.com/share/40049d7eb1f942fb9324b32b7df7b1e1 \n\nFor the Harry Potter photo bubble, make it look like a regular image attachment with that small native caption text right underneath it. The images are attached here. First is the boxset, second is the hogwarts model. rename them as needed.\n\nLastly, for the \"here\" link at the very end of the chat—when they click it, I want a gorgeous pop-up gallery modal to open up. This modal will eventually hold screenshots of these exact prompts, so make it look like a sleek developer IDE window. Alternatively, there should also be a way to download all prompts as a text pdf rght from that modal. Something to keep in mind."
   },
+  {
+    "id": "prompt-004",
+    "title": "React Three Fiber background",
+    "phase": "Visual polish",
+    "blueprint": "Goals:\n- Subtle R3F canvas behind the entire chat app\n- Floating particles or slow morphing mesh\n- Mouse + scroll reactive motion at 60fps\n- Theme-aware colors/opacity for dark and light mode",
+    "rawPrompt": "Last major piece. The co-founder of this company is ex-Unity and I would assume, loves interactive web elements, so I want to add a high-taste, subtle 3D effect in the background using React Three Fiber.\n\nLet's place a canvas absolute behind the entire chat app. I want something minimal that doesn't distract from reading, maybe a gentle field of floating particles or a slow, morphing abstract mesh that moves dynamically when the user moves their mouse or scrolls down.\n\nMake sure it's optimized to run at a smooth 60fps, and let's ensure it shifts opacity or colors properly when we toggle between light and dark mode so it always looks incredibly polished."
+  },
+  {
+    "id": "prompt-005",
+    "title": "Cinematic iMessage layout rebuild",
+    "phase": "Layout rebuild",
+    "blueprint": "Goals:\n- Rebuild shell to match mobile iMessage screenshot at cinematic desktop scale\n- max-w-[1800px] centered column, sticky header/footer, flex chat body\n- Scale up typography and bubbles for large displays\n- Remove macOS sidebar — pure single-column iMessage",
+    "rawPrompt": "Okay, we've got the baseline of our project setup. But now we need to cleanup a number of things. \n\nFirst, let's completely rebuild our core layout shell. Check out the attached screenshot. I want to replicate this exact mobile iMessage interface layout, but instead of making it phone-sized, we are going to radically scale it up into a massive, cinematic desktop experience.\n\nLet's configure the layout using Tailwind CSS with these exact structural specs:\n\nThe Scale & Width: Center the entire application on the screen, but set the main column container to a maximum width of max-w-[1800px]. Because we are shifting to this massive layout, let's significantly increase the typography sizes, icon sizes, padding, and the dimensions of the chat bubbles so everything feels proportional, premium, and incredibly crisp on a large monitor.\n\nGlobal Browser Scroll: Completely eliminate any internal container scrolling or overflow-y-scroll on the chat wrappers. The entire page must scroll naturally using the browser window's native scroll bar.\n\nThe Sticky Header (Based on the Screenshot): Create a fixed header tracking at the top of the scaled column. It needs the blue back chevron on the left with a fake message count unread badge, a giant centered circular avatar placeholder with an initial, the contact name centered underneath it, and a video call icon on the right. Give it a gorgeous dark blurred glass background (backdrop-blur-md over a semi-transparent black background).\n\nThe Sticky Footer (Based on the Screenshot): Create a fixed footer wrapper staying anchored at the absolute bottom of the screen. Inside it, build the giant iMessage input bar: a large circular grey button with a plus (+) icon on the left, and a massive pill-shaped input area containing the placeholder text \"iMessage\" and the microphone icon aligned neatly inside the right edge.\n\nThe Chat Body Container: The middle section will house our chat history thread. Give it massive top and bottom padding so that when chat bubbles pile up, they never get trapped underneath our fixed header or fixed footer elements."
+  },
+  {
+    "id": "prompt-006",
+    "title": "Header & footer scale-down",
+    "phase": "Layout tuning",
+    "blueprint": "Goals:\n- Scale header/footer to ~60% of current size\n- Reduce header avatar, title font, and padding\n- Tighten footer vertical padding; input pill only slightly smaller\n- Rename contact header to \"VVD\"",
+    "rawPrompt": "Okay, looks pretty good, A few tweaks though. I need you to scale back on the size of the header and footer a little bit so everything should be about 60% of what it currently is. The footer and header are too large as it currently is, so there is hardly any space for the body unless we zoom out. Also instead of Zied & Haseeb as the recipients at the top, maybe make it VVD directly, \n\nFor the footer, the major reductions should be in the top and bottom padding particularly. the input itself should only slightly be reduced.\n\nFor the header, the recipient font size should be reduced, the recipient avatar circle at the top center should be significantly reduced in size, and the padding around should be reduced generally. \n\nLet's attempt these fixes first and see how it goes"
+  },
+  {
+    "id": "prompt-007",
+    "title": "Conversation state machine",
+    "phase": "Scroll orchestration",
+    "blueprint": "Goals:\n- Scroll position triggers next message block\n- Outgoing messages type character-by-character in fixed bottom input bar\n- On complete string, clear input and mount bubble in thread\n- Incoming messages show typing indicator first, then bubble",
+    "rawPrompt": "Awesome. Now let's build out the state machine that handles how the conversation actually progresses.\n\nWe are going to orchestrate a custom scroll-driven behavior using our conversation data array, and we'll use the fixed bottom input bar we just built as a major structural piece of the animation.\n\nHere's the logic path I want to establish:\n\nThe Scroll Triggers: As the user scrolls down the page, we should track their scroll position to trigger the appearance of the next message block.\n\nThe Input Box Pre-Typing Step: Whenever the next message in the data sequence is sent by \"Me\", it shouldn't just instantly pop into the main message thread. Instead, the text needs to type itself out character-by-character directly inside our fixed bottom input bar container, mimicking a real person typing out a message in real-time.\n\nThe Sent State Transition: The moment the string completely finishes typing itself out into the input field container, pause for a split second, clear the input field back to its blank placeholder state instantly, and cleanly animate that message bubble popping into view in the main chat body area right above it.\n\nStandard Triggers for Them: For messages coming from Zied or Haseeb, skip the bottom input typing step entirely. Instead, use their standard sequence: show the bouncing iOS three-dots typing indicator bubble inside the chat history area for a brief window, and then swap it out smoothly for their actual message bubble."
+  },
+  {
+    "id": "prompt-008",
+    "title": "Scroll-linked pacing math",
+    "phase": "Scroll physics",
+    "blueprint": "Goals:\n- Zero time-based animations — scroll is the only clock\n- useScroll global progress 0→1 mapped across message array\n- Per-message local progress for phase A (typing) and phase B (sent)\n- Perfect reverse on scroll up",
+    "rawPrompt": "Okay, nice work. But we need to refine it even more. I want a true scroll-linked pacing system. This means zero time-based animations (no durations, no delays). If the user stops scrolling, everything must freeze instantly in place. If they scroll backward, the entire animation must perfectly reverse.\n\nLet's build the state management hook or engine for this using Framer Motion's useScroll.\n\nHere is how the mathematical logic should work:\n\nWe need to track the global window scroll progress from 0 (top of the page) to 1 (bottom of the page).\n\nLet's map that entire 0 to 1 span across our conversation array. Each message block in our data array should own a specific, dedicated segment of that scroll timeline (for example, message 1 is scroll 0.0 to 0.05, message 2 is 0.05 to 0.12, etc.).\n\nFor any message block currently active on the timeline, we need to extract its local progress percentage (from 0% to 100% of just that specific message's scroll window).\n\nPlease write the React logic and hook setup that accurately breaks down our global scroll progress into these individual, highly responsive message timelines. Don't build any UI updates yet, let's just ensure this mathematical scroll-tracking engine is completely bulletproof, efficient, and typed with TypeScript."
+  },
+  {
+    "id": "prompt-009",
+    "title": "Wire scroll math to UI",
+    "phase": "Scroll wiring",
+    "blueprint": "Goals:\n- Map local progress to Math.floor(progress * charCount) for composer draft\n- Mount bubbles at phase B boundary with Framer layout push-up\n- Incoming typing indicator driven by scroll segment phase A",
+    "rawPrompt": "Okay, the maths looks good .Now let's wire it up to the actual UI elements we built earlier to handle the strict visual rules.\n\nWe need to apply the local scroll progress of the active message to two specific UI layers:\n\nThe Character-by-Character Input Box Typing:\n\nWhen the active scroll segment belongs to a message sent by \"Me\", take that full text string and look at its total character count (e.g., 60 characters).\n\nMap the local scroll progress (0 to 1) directly to the string length using Math.floor(localProgress * totalCharacters).\n\nUse that calculated index to update the value of our fixed bottom input bar using .slice(0, currentCharacterIndex). This way, if the user scrolls down 10 pixels, 3 characters appear. If they stop, the text stops typing. If they scroll up, the characters are literally deleted out of the input box.\n\nThe Sent State & Freezing Chat Bubbles:\n\nThe exact moment the scroll progress for that message reaches 1 (the string is fully typed in the input field), clear the input field instantly, and render that message bubble into the main message thread container above it.\n\nTo make the bubble entry feel incredibly physical, don't use standard transitions. Use Framer Motion’s useTransform to bind the bubble's layout scale, vertical position (y), and opacity directly to the next tiny sliver of scroll progress. If they scroll down, the bubble expands and rises. If they freeze their scroll mid-way, the bubble must hang half-transparent and half-scaled in mid-air.\n\nFor Zied and Haseeb's messages, apply this exact same direct-binding logic to their bouncing typing indicator bubbles first, and then morph them smoothly into their text bubbles as the scroll continues downward.\n\nLet's implement this rendering layer carefully. Ensure we aren't causing unnecessary re-renders that would make the scroll feel jittery or heavy."
+  },
+  {
+    "id": "prompt-010",
+    "title": "Sticky pinning architecture",
+    "phase": "Scroll layout",
+    "blueprint": "Goals:\n- h-[600–800vh] scrub track for browser scrollbar\n- sticky top-0 h-screen camera locks UI in viewport\n- Internal thread scroll for message history (later superseded)",
+    "rawPrompt": "So we've hit a bit of an issue here. Right now, when I scroll down to type the messages, the entire chat window physically scrolls up and off the screen, so you can't even see the bubbles appear anymore.\n\nThe page's vertical scroll shouldn't actually move the chat box layout. It should only act as a timeline that progresses our animations. The interface itself needs to stay completely locked on the screen.\n\nLet's refactor the layout using Tailwind to implement a proper \"sticky pinning\" architecture:\n\nThe Scroll Track Wrapper:\n\nLet's wrap our entire page in a parent div that has a massive physical height—something like h-[600vh] or h-[800vh]. This is what generates our global browser scrollbar track.\n\nThe Sticky Viewport Pin:\n\nInside that track wrapper, wrap our actual max-w-[1800px] iMessage UI layout in a container styled with sticky top-0 h-screen w-full overflow-hidden.\n\nThis completely locks our header, message area, and bottom input field safely inside the viewport. When the user scrolls, the layout stays absolutely still on the screen while our Framer Motion useScroll engine safely reads the background progress tokens.\n\nInternal Chat Thread Behavior:\n\nNow that the global window isn't physically moving things around, let's fix the message list behavior. The middle message thread container should be set to flex flex-col justify-end so messages stay naturally anchored near the bottom input bar.\n\nThe thread should only push upward or scroll internally if the messages run out of vertical room at the bottom of the screen. When a new message fully transitions from \"typing in the input field\" to \"sent to the thread,\" let's trigger a smooth, automatic internal scroll anchor to reveal the new bubble."
+  },
+  {
+    "id": "prompt-011",
+    "title": "Remove auto-scroll to bottom",
+    "phase": "Cleanup",
+    "blueprint": "Goals:\n- Remove automatic scroll-to-bottom on new messages\n- User controls vertical scroll manually",
+    "rawPrompt": "okay theres a lot to cleanup, but first can you take out the auto scroll to the bottom. Bottom scrolls should happen manually"
+  },
+  {
+    "id": "prompt-012",
+    "title": "Pure scrollytelling refactor",
+    "phase": "Scrollytelling",
+    "blueprint": "Goals:\n- Golden rule: no internal scrollbars anywhere\n- Window scroll scrubs timeline like a video playhead\n- h-[1000vh] track + sticky camera + useScroll timeline engine\n- Phase A typing / Phase B bubble mount per message slice\n- flex-col justify-end thread with layout push-up",
+    "rawPrompt": "Okay. Now let's completely wipe the slate clean on how we are handling the scroll and layout logic, because the current setup is fighting the browser. We are going to build a 100% pure scrollytelling experience.\n\nHere is the golden rule for this refactor: Absolutely no internal scrollbars. I do not want overflow-y-scroll or overflow-y-auto anywhere in this application. The only thing the user does is scroll their mouse wheel down the main browser window, and that physical action should scrub through our conversation timeline exactly like dragging the playhead on a video editor.\n\nHere is the exact architecture we need to build using Framer Motion and Tailwind:\n\n1. The Scrub Track & The Sticky Camera\nWrap the entire page component in a massive invisible track (for example, h-[1000vh]). This forces the browser to generate a huge global scrollbar without us adding content.\nInside that track, make our main UI wrapper sticky top-0 h-screen w-full overflow-hidden. This acts as our fixed camera lens. The UI never physically moves up or down the page again; it is permanently locked in the viewport.\n\n2. The Timeline Engine (useScroll)\nHook into the global window scroll using Framer Motion's useScroll. This gives us a scrollYProgress value from 0.0 to 1.0. We need to divide that timeline dynamically based on the length of our messagesData array. If we have 20 messages, each message gets a specific mathematical slice of that 0-to-1 timeline.\n\n3. The Micro-States (Inside each message's time window)\nWhen the user's scroll depth enters a message's specific time slice, we break that slice into two phases:\n\nPhase A (Typing): Take the local progress of this time slice and map it to string slicing. The text dynamically types out character-by-character into our fixed bottom input bar. If they scroll backwards, the text un-types.\n\nPhase B (Sending): The exact moment the local progress finishes the string, the input box instantly clears, and the actual message bubble mounts into the main chat container above it.\n\n4. The Chat Pushing Up (Zero Scrollbars)\nSince we are strictly forbidding internal scrollbars, the chat body container must be flex flex-col justify-end. When a new message bubble renders into the DOM at the bottom of the list, just apply Framer Motion's layout prop to the bubbles. This will smoothly push all the older messages upward automatically. If old messages get pushed past the top of the header, the overflow-hidden on our sticky camera wrapper will just cleanly clip them out of view.\n\nLet's write the architectural shell and the useScroll math hook for this first. Strip out all previous scroll logic and let's get this \"fixed camera\" timeline working flawlessly!"
+  },
+  {
+    "id": "prompt-013",
+    "title": "Pin iMessage header in thread",
+    "phase": "Layout polish",
+    "blueprint": "Goals:\n- \"iMessage\" and \"Today\" labels always visible at top of chat body\n- Chat column full height from first load\n- New messages stack upward from the bottom",
+    "rawPrompt": "awesome work. We finally have the feel right. I have a few tweaks to make though so bear with me. first one is a little one. The \"IMessage\" and \"Today\" texts should always be at the top of the chatbox from the jump. And the first messages appear right under it, like it currently works. Meaning the chatbox should already be full height fromthe jump. Do you get what I mean?"
+  },
+  {
+    "id": "prompt-014",
+    "title": "Double scrub track height",
+    "phase": "Pacing",
+    "blueprint": "Goals:\n- Increase scrub track from 1000vh → 2000vh\n- Finer character-by-character typing control via longer physical scroll",
+    "rawPrompt": "Finally, we're getting the right vibe. To dial in the pacing, let's make the entire scrollytelling experience take exactly twice as long to scroll through from start to finish. Let's double the height of our outer scroll track wrapper from h-[1000vh] to h-[2000vh]. This will give the user much more fine-grained control over the character-by-character typing speed."
+  },
+  {
+    "id": "prompt-015",
+    "title": "Loom inline embed attachments",
+    "phase": "Media",
+    "blueprint": "Goals:\n- Render Loom iframe inside iMessage video attachment bubble\n- rounded-[24px] corners + Framer layout animations\n- Mount video bubble instantly when preceding text completes",
+    "rawPrompt": "Alright awesome. Next, for the two Loom video messages, I'm passing actual Loom embed URLs in our messagesData.ts array. Let's update our video message component to render Loom's responsive embed player inside an <iframe>.\n\nMake sure the iframe wrapper matches the exact rounded corners of an iMessage video attachment, and let's apply our Framer Motion layout animations to it so that it still fits perfectly into our scroll-linked timeline execution. The video should mount in the chat thread cleanly the moment the preceding text finishes typing."
+  },
+  {
+    "id": "prompt-016",
+    "title": "Auto-scroll on page load",
+    "phase": "Auto-play",
+    "blueprint": "Goals:\n- RAF programmatic scroll on load at readable pace\n- Pause on wheel / touch / arrow keys\n- Play/Pause button in footer with tooltip\n- Compatible with Framer useScroll timeline",
+    "rawPrompt": "Looks great. To make sure people instantly get the concept when they land on the page, I want to add an auto-play feature. The moment the site loads, it should automatically start smooth-scrolling down so the chat begins typing itself.\n\nLet's build out this auto-scroll engine and the UI for it:\n\nThe Auto-Scroll Loop: Create a smooth, programmatic scroll loop (using requestAnimationFrame or a highly optimized window.scrollBy) that triggers immediately on page load. It should scroll down at a steady, readable pace.\n\nUser Interruption Hook: We need to respect user control. Add event listeners for wheel, touchmove, and keydown (for up/down arrows). If the user initiates any manual scroll action, the auto-scroll loop must instantly pause.\n\nThe Play/Pause Button: Down in our sticky footer, let's replace that left + icon with a sleek Play/Pause icon (maybe from Lucide React). It should toggle based on our isPlaying state. Wrap it in a clean, minimal tooltip that says \"Play/Pause Chat\" so they know they can manually trigger the auto-scroll from there if they want to sit back and watch.\n\nLet's set up this state manager and the UI toggle first. Make sure the programmatic scroll plays nicely with our Framer Motion useScroll setup!"
+  },
+  {
+    "id": "prompt-017",
+    "title": "Video intercept & modal flow",
+    "phase": "Media playback",
+    "blueprint": "Goals:\n- Auto-pause scroll when video message is reached\n- Auto-open Loom fullscreen modal\n- \"Close video to resume chat\" hint\n- Resume auto-scroll on modal close",
+    "rawPrompt": "I am really loving it. It's nearly perfect. Just a few more things and we're good.\n\nNextw let's make it smart enough to handle our media files.\n\nWhen the \"playback\" reaches a video/loom message, the user shouldn't have to scramble to pause the chat to watch it. It should happen automatically.\n\nHere is the exact flow we need to implement for video messages:\n\nThe Intercept: As the scroll progress reaches the timestamp/scroll-depth of a video message, automatically pause the auto-scroll engine (isPlaying becomes false).\n\nThe Auto-Popup: The moment it pauses, automatically trigger our Framer Motion layout transition to pop the Loom video modal open in the center of the screen.\n\nThe UX Hint: Inside the modal (maybe right under the video or as a floating pill), add a clean UI indicator that says something like, \"Close video to resume chat.\"\n\nThe Resume Action: When the user clicks the close button on the video modal, the modal smoothly animates away, and our auto-scroll engine automatically fires back up (isPlaying becomes true) so the conversation seamlessly continues.\n\nLet's tie this video detection logic into our existing scroll-progress hook. Keep the transitions crisp!"
+  },
+  {
+    "id": "prompt-018",
+    "title": "Pacing & timeline tightening",
+    "phase": "Scroll physics",
+    "blueprint": "Goals:\n- 1.5× auto-scroll pixel speed\n- Tighter segment weights — minimal gap between messages\n- Media messages mount almost instantly after prior text",
+    "rawPrompt": "Okay, so we're good but the pacing is off. Let's make two major adjustments to how the motion feels.\n\n1: The current programmatic scrolling is a bit too slow. Let's take the pixel step value in our requestAnimationFrame or scrollBy loop and multiply it by 1.5x so it moves at a brisker, more natural reading pace.\n\n2: Right now, the delay between a message finishing and the next one starting (especially my typing or media appearing) is way too long. The math dividing our scroll timeline is leaving too much empty space between active message windows.\nLet's tighten the scroll mapping. I want the gap between the end of one message and the start of the next to be extremely tight. For media messages (like photos or Loom videos), there should be practically zero delay—they should trigger almost instantly after the previous text finishes."
+  },
+  {
+    "id": "prompt-019",
+    "title": "Video modal auto-close on end",
+    "phase": "Modal polish",
+    "blueprint": "Goals:\n- Detect Loom video completion in modal\n- Auto-close modal and resume auto-scroll when video ends",
+    "rawPrompt": "Nice. Now let's add a really high-end touch to the video modal. When the Loom video finishes playing, I want the modal to automatically close itself and instantly resume our auto-scroll engine, so the viewer doesn't even have to click anything.\n\nSince Loom is embedded via an iframe, we can't use standard HTML5 video events. We need to listen to Loom's postMessage API.\n\nHere is how we should build the intercept:\n\nWhen the Loom modal mounts, attach a window.addEventListener('message', ...) hook.\n\nWe need to parse the incoming message events to detect when the Loom player broadcasts its \"playback ended\" state.\n\nThe moment we catch that specific \"video ended\" event from the Loom iframe, automatically trigger the state change to close the modal and immediately set isPlaying back to true to resume the auto-scroll.\n\nMake sure we properly clean up and remove the event listener when the modal unmounts so we don't cause memory leaks.\n\nLet's implement this cross-origin message listener. If Loom requires a specific URL parameter on the embed link to broadcast these events, let's make sure we update the iframe src to include it."
+  },
+  {
+    "id": "prompt-020",
+    "title": "Video opens fullscreen on click",
+    "phase": "Video UX",
+    "blueprint": "Goals:\n- Clicking inline video opens fullscreen popup (not inline playback)\n- Closing popup resumes auto-scroll",
+    "rawPrompt": "Nice. Now can you just make it so when they click on the video in chat instead of playing it in that small screen, it always prings it up to the full screen popup, which, when closed resumes autop scroll."
+  },
+  {
+    "id": "prompt-021",
+    "title": "Video popup on manual scroll down",
+    "phase": "Video UX",
+    "blueprint": "Goals:\n- Trigger video modal on downward scroll (manual or auto)\n- Do not trigger when scrolling up\n- Same pause / resume behavior as auto-scroll intercept",
+    "rawPrompt": "Nice. Now can you just make it so when they click on the video in chat instead of starting playback as it is in that screen, it handles it ilike it does on auto scroll (ie brings it up as a popup, which, when closed resumes auto scroll). I also need it to trigger that video popup whether manual scroll down or auto scroll down (emphasis on a downward scroll not up)"
+  },
+  {
+    "id": "prompt-022",
+    "title": "Loom inline preview + popup overlay",
+    "phase": "Video UX",
+    "blueprint": "Goals:\n- Keep live Loom embed visible in chat bubble\n- Transparent overlay captures clicks → opens fullscreen modal\n- Viewing always happens in popup; thread shows preview only",
+    "rawPrompt": "Slight tweak though, i still want it appearing as it was as a loom video in it's smaller version. I just want the actual viewing experience to always be in the popup. So it should still be a loom. you can just ad a transpparent overlay that on click triggers the popup or something. The loom should still show up in the media chat bubble."
+  },
+  {
+    "id": "prompt-023",
+    "title": "Mobile responsiveness & input",
+    "phase": "Responsive polish",
+    "blueprint": "Goals:\n- Responsive Tailwind scaling for mobile (fonts, bubbles, padding)\n- Proportional header/footer on phones\n- Responsive Loom modal with safe-area padding\n- Single-line composer: nowrap + horizontal mask (iMessage style)\n- Maintain #000 / #0B0B0C dark aesthetic",
+    "rawPrompt": "Nice. We're in the final stretch. Just a few things to cleanup.\n\n1. Responsiveness \n\nRight now, our app is beautifully optimized for an ultra-wide desktop view (max-w-[1800px]), but it needs to scale down flawlessly on smaller screens.\n\nLet's use Tailwind's responsive prefixes (like md:, lg:) to scale down the UI on mobile layouts. On mobile viewport sizes, significantly reduce the overall font sizes, scale down the massive chat bubble dimensions, and tighten the message padding.\n\nEnsure that our sticky top header and sticky bottom footer elements dynamically resize so they take up proportional, comfortable space on real phones.\n\nCrucially, verify that the automated Loom video pop-up modal is fully responsive. It should gracefully fit the mobile viewport aspect ratio with proper safe padding around the edges so the close button is always easily clickable on touch screens.\n\nLet's maintain #000000 or a deep #0B0B0C background color scheme seamlessly across all breakpoint screens.\n\n2. Native Input Field Horizontal Truncation (No Text Wrapping):\n\nLet's fix how the text renders into the sticky bottom input field during the scroll-linked typing animation. Right now, long strings might wrap to multiple lines or distort the height of our pill-shaped input container.\n\nThe simulated text input should act exactly like a native, single-line iMessage text field. It must never wrap text vertically.\n\nLet's wrap the typing text display inside a dedicated container styled with white-space: nowrap, overflow: hidden, and set it to naturally align or mask to the right. As the scroll progression types out long sentences, the text should keep moving forward on a single horizontal line, allowing the earlier text to gracefully slide and disappear out of view to the left."
+  },
+  {
+    "id": "prompt-024",
+    "title": "Composer & mobile video fixes",
+    "phase": "Bug fixes",
+    "blueprint": "Goals:\n- Fix invisible scroll-linked typing text in footer input\n- Fix collapsed Loom embed width on mobile (flex min-width issue)",
+    "rawPrompt": "uh oh.... I've noticed two bugs here. I can no longer see the text being typed in the input field. Please fix that. And second, I can't see the loom video in chat (not tthe popup) on mobile. Why is that?"
+  },
+  {
+    "id": "prompt-025",
+    "title": "Prompt History gallery refactor",
+    "phase": "Prompt gallery",
+    "blueprint": "Goals:\n- Remove screenshot preview column from Prompt History modal\n- 3-pane IDE layout: Explorer | Blueprint Summary | Raw Prompt\n- Harvest all conversation prompts into promptsData with verbatim raw text\n- Per-prompt .txt and .pdf export (blueprint + raw combined)\n- Deep dark mode aesthetic (#0B0B0C / VS Code styling)",
+    "rawPrompt": "Nice work. We are on the absolute last step for this project. Let's finalize our \"Prompt History\" gallery modal. Look at the attached screenshot to see what we currently have. I want to modify this layout to remove the right-side screenshot preview slot and replace it with a block of text showing the exact wording of that prompt, not the summarized version in the middle column,\n\nLet's structure the new layout like this:\n\nColumn 1 (Far Left - The Explorer Sidebar):\n\nKeep this exactly like the screenshot. It acts as our navigation menu for the prompt list. Each item should show a generated chronological title (e.g., \"01 Scaffold iMessage layout\") and a clean subtitle tracking the main focus (e.g., \"Foundation\", \"Scroll Physics\", \"Responsive Polishing\"). Clicking an item updates the active state for columns 2 and 3.\n\nColumn 2 (The Middle Pane - The Blueprint Summary):\n\nThis section will show a clean, high-level breakdown of what the active prompt was trying to achieve in simple, organized terms, very similar to the bulleted formatting under // Cursor agent prompt in the screenshot.\n\nColumn 3 (The Right Pane - The Raw Prompt):\n\nInstead of a screenshot preview, this column will take up the entire right side of the view. It should display a code-block styled window containing the exact raw wording of the conversational prompt that I fed to you during that specific phase of development.\n\nSince you have the full context of our entire conversation history in this thread, please go ahead and harvest the exact final text of all the prompts we used to build this site, fix any minor typos, and automatically populate our data array with them!\n\nThe Export Action Buttons:\n\nIn the bottom right footer, keep the \"Download .txt\" and \"Download PDF\" buttons.\n\nWhen clicked, let's write the client-side download utility logic. It should bundle the currently selected prompt's data—specifically appending the raw input text from Column 3 right alongside your agent blueprint summary from Column 2—and cleanly export it as a nicely formatted text file or a clean PDF document stream.\n\nLet's refactor this component to drop the image slots and set up the new 3-pane layout architecture. Let's make sure it perfectly matches our deep dark mode aesthetic!"
+  },
+  {
+    "id": "prompt-026",
+    "title": "Final prompt list & explorer stack",
+    "phase": "Project wrap-up",
+    "blueprint": "Goals:\n- Add the Prompt History refactor prompt and this wrap-up prompt to promptsData\n- Stack explorer title and phase subtitle vertically (not side by side)\n- Final polish before project ship",
+    "rawPrompt": "Last little thing, this prompt and the last prompt should also be added to the list. And a minor tweak. on the left hand column, place the label and the phase stacked on top of each other not side by side. And that would be all. Project complete !"
+  }
 ];
-
-export function getAllPromptsAsText() {
-  return promptEntries
-    .map(
-      (entry, index) =>
-        `--- Prompt ${index + 1}: ${entry.title} (${entry.phase}) ---\n\n${entry.content}`,
-    )
-    .join("\n\n\n");
-}
