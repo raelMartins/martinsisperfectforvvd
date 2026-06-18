@@ -29,7 +29,10 @@ export default function ChatThread() {
           <p className="text-2xl font-normal" style={{ color: colors.muted }}>
             iMessage
           </p>
-          <p className="mt-1 text-2xl font-normal" style={{ color: colors.muted }}>
+          <p
+            className="mt-1 text-2xl font-normal"
+            style={{ color: colors.muted }}
+          >
             Today
           </p>
         </div>
@@ -39,8 +42,7 @@ export default function ChatThread() {
             {visibleMessages.map((message, index) => {
               const previous = visibleMessages[index - 1];
               const showSenderName =
-                message.sender !== "me" &&
-                previous?.sender !== message.sender;
+                message.sender !== "me" && previous?.sender !== message.sender;
               const isLatest = index === visibleMessages.length - 1;
 
               return (

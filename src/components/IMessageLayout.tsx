@@ -18,10 +18,7 @@ type IMessageLayoutProps = {
   messages: Message[];
 };
 
-function IMessageShell({
-  activeConversation,
-  messages,
-}: IMessageLayoutProps) {
+function IMessageShell({ activeConversation, messages }: IMessageLayoutProps) {
   const { colors, theme } = useTheme();
 
   return (

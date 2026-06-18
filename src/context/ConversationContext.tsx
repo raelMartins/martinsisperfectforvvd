@@ -27,7 +27,9 @@ type ConversationContextValue = {
   showIncomingTyping: boolean;
 };
 
-const ConversationContext = createContext<ConversationContextValue | null>(null);
+const ConversationContext = createContext<ConversationContextValue | null>(
+  null,
+);
 
 function delay(ms: number) {
   return new Promise<void>((resolve) => {
@@ -64,11 +66,7 @@ export function ConversationProvider({
 
   const updateScrollMotion = useCallback(() => {
     const doc = document.documentElement;
-    setScrollMetrics(
-      window.scrollY,
-      doc.scrollHeight,
-      window.innerHeight,
-    );
+    setScrollMetrics(window.scrollY, doc.scrollHeight, window.innerHeight);
   }, [setScrollMetrics]);
 
   const scrollToBottom = useCallback(
@@ -108,14 +106,11 @@ export function ConversationProvider({
     }
   }, []);
 
-  const revealMessageAt = useCallback(
-    (index: number) => {
-      const nextCount = index + 1;
-      revealedCountRef.current = nextCount;
-      setRevealedCount(nextCount);
-    },
-    [],
-  );
+  const revealMessageAt = useCallback((index: number) => {
+    const nextCount = index + 1;
+    revealedCountRef.current = nextCount;
+    setRevealedCount(nextCount);
+  }, []);
 
   const processNextMessage = useCallback(async () => {
     const index = revealedCountRef.current;

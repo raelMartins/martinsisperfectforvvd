@@ -88,7 +88,11 @@ export default function MessageBubble({
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, y: emphasize ? 20 : 14, scale: emphasize ? 0.94 : 0.96 }}
+      initial={{
+        opacity: 0,
+        y: emphasize ? 20 : 14,
+        scale: emphasize ? 0.94 : 0.96,
+      }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{
         type: "spring",
