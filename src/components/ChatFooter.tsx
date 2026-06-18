@@ -1,10 +1,13 @@
 "use client";
 
 import { useTheme } from "@/context/ThemeContext";
+import { useConversation } from "@/context/ConversationContext";
 import { LAYOUT } from "@/constants/layout";
 
 export default function ChatFooter() {
   const { colors, theme } = useTheme();
+  const { inputDraft, isComposing } = useConversation();
+
   const glassClass =
     theme === "dark"
       ? "border-white/[0.06] bg-black/60"
@@ -18,16 +21,16 @@ export default function ChatFooter() {
         height: LAYOUT.footerHeight,
       }}
     >
-      <div className="flex h-full items-center gap-6 px-10 pb-8 pt-5">
+      <div className="flex h-full items-center gap-5 px-8 py-2">
         <button
           type="button"
           aria-label="Add attachment"
-          className="flex h-[72px] w-[72px] shrink-0 items-center justify-center rounded-full transition-opacity hover:opacity-80"
+          className="flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-full transition-opacity hover:opacity-80"
           style={{ backgroundColor: colors.theirBubble }}
         >
           <svg
-            width="32"
-            height="32"
+            width="28"
+            height="28"
             viewBox="0 0 24 24"
             fill="none"
             stroke={colors.muted}
@@ -40,24 +43,35 @@ export default function ChatFooter() {
         </button>
 
         <div
-          className="flex h-[72px] flex-1 items-center rounded-full px-8"
+          className="flex h-[64px] flex-1 items-center overflow-hidden rounded-full px-7"
           style={{ backgroundColor: colors.theirBubble }}
         >
-          <span
-            className="flex-1 text-2xl font-normal"
-            style={{ color: colors.muted }}
+          <div
+            className="flex min-w-0 flex-1 items-center text-xl font-normal"
+            style={{ color: isComposing ? colors.text : colors.muted }}
+            aria-live="polite"
+            aria-label={isComposing ? "Composing message" : "Message input"}
           >
-            iMessage
-          </span>
+            {isComposing ? (
+              <span className="truncate whitespace-pre-wrap">
+                {inputDraft}
+                <span className="ml-px inline-block w-[2px] animate-pulse bg-current opacity-70">
+                  &nbsp;
+                </span>
+              </span>
+            ) : (
+              <span>iMessage</span>
+            )}
+          </div>
           <button
             type="button"
             aria-label="Voice message"
-            className="transition-opacity hover:opacity-80"
+            className="ml-3 shrink-0 transition-opacity hover:opacity-80"
             style={{ color: colors.muted }}
           >
             <svg
-              width="32"
-              height="32"
+              width="28"
+              height="28"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"

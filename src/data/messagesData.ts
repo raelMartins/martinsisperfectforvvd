@@ -6,7 +6,7 @@ const LOOM_PROJECT_ID = "40049d7eb1f942fb9324b32b7df7b1e1";
 
 export const conversation: Conversation = {
   id: "vvd-product-engineer",
-  title: "Zied & Haseeb",
+  title: "VVD",
   participants: ["Zied", "Haseeb"],
   lastPreview: "😂I love the sound of that.",
   lastTimestamp: "Now",

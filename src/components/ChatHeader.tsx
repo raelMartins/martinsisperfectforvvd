@@ -39,18 +39,17 @@ export default function ChatHeader({
         height: LAYOUT.headerHeight,
       }}
     >
-      <div className="flex h-full flex-col px-10 pt-8 pb-6">
+      <div className="flex h-full flex-col px-8 pt-4 pb-3">
         <div className="grid grid-cols-[1fr_auto_1fr] items-start">
-          {/* Back + unread badge */}
-          <div className="flex items-center gap-3 pt-2">
+          <div className="flex items-center gap-2 pt-0.5">
             <button
               type="button"
               aria-label="Back"
               className="flex items-center text-[#0A84FF] transition-opacity hover:opacity-80"
             >
               <svg
-                width="36"
-                height="36"
+                width="28"
+                height="28"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -61,33 +60,32 @@ export default function ChatHeader({
               >
                 <path d="M15 18l-6-6 6-6" />
               </svg>
-              <span className="flex h-10 min-w-10 items-center justify-center rounded-full bg-[#0A84FF] px-2.5 text-xl font-semibold text-white">
+              <span className="flex h-8 min-w-8 items-center justify-center rounded-full bg-[#0A84FF] px-2 text-base font-semibold text-white">
                 {unreadCount}
               </span>
             </button>
           </div>
 
-          {/* Avatar + contact name */}
           <div className="flex flex-col items-center">
             <div
-              className="flex h-36 w-36 items-center justify-center rounded-full text-5xl font-medium text-white/90"
+              className="flex h-[72px] w-[72px] items-center justify-center rounded-full text-2xl font-medium text-white/90"
               style={{ backgroundColor: colors.theirBubble }}
             >
               {initials}
             </div>
             <button
               type="button"
-              className="mt-4 flex items-center gap-1.5 transition-opacity hover:opacity-80"
+              className="mt-2 flex items-center gap-1 transition-opacity hover:opacity-80"
             >
               <span
-                className="text-3xl font-semibold tracking-tight"
+                className="text-xl font-semibold tracking-tight"
                 style={{ color: colors.text }}
               >
                 {conversation.title}
               </span>
               <svg
-                width="20"
-                height="20"
+                width="14"
+                height="14"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke={colors.muted}
@@ -101,17 +99,16 @@ export default function ChatHeader({
             </button>
           </div>
 
-          {/* Video + theme */}
-          <div className="flex items-start justify-end gap-2 pt-2">
-            <ThemeToggle iconSize={28} />
+          <div className="flex items-start justify-end gap-1.5 pt-0.5">
+            <ThemeToggle iconSize={22} />
             <button
               type="button"
               aria-label="Video call"
               className="text-[#0A84FF] transition-opacity hover:opacity-80"
             >
               <svg
-                width="40"
-                height="40"
+                width="30"
+                height="30"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"

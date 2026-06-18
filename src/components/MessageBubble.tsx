@@ -11,6 +11,7 @@ import { useTheme } from "@/context/ThemeContext";
 type MessageBubbleProps = {
   message: Message;
   showSenderName?: boolean;
+  emphasize?: boolean;
 };
 
 function MessageText({ message, isMe }: { message: Message; isMe: boolean }) {
@@ -73,6 +74,7 @@ function MessageMedia({ message }: { message: Message }) {
 export default function MessageBubble({
   message,
   showSenderName = false,
+  emphasize = false,
 }: MessageBubbleProps) {
   const { colors } = useTheme();
   const isMe = message.sender === "me";
@@ -86,12 +88,12 @@ export default function MessageBubble({
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, y: 14, scale: 0.96 }}
+      initial={{ opacity: 0, y: emphasize ? 20 : 14, scale: emphasize ? 0.94 : 0.96 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{
         type: "spring",
-        stiffness: 420,
-        damping: 28,
+        stiffness: emphasize ? 480 : 420,
+        damping: emphasize ? 26 : 28,
         mass: 0.8,
       }}
       className={["flex w-full", isMe ? "justify-end" : "justify-start"].join(
