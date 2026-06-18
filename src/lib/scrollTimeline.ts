@@ -9,8 +9,12 @@ import type {
   TimelineWeightMode,
 } from "@/types/scrollTimeline";
 
-const DEFAULT_MIN_SEGMENT_SPAN = 0.01;
+const DEFAULT_MIN_SEGMENT_SPAN = 0.0025;
 const EPSILON = 1e-9;
+
+function isMediaOnlyMessage(message: Message): boolean {
+  return Boolean(!getTypableText(message) && (message.video || message.image));
+}
 
 export function clamp01(value: number): number {
   if (value <= 0) return 0;
@@ -19,13 +23,15 @@ export function clamp01(value: number): number {
 }
 
 export function getMessageScrollWeight(message: Message): number {
-  let weight = 1;
+  if (isMediaOnlyMessage(message)) {
+    return 0.12;
+  }
+
+  let weight = 0.5;
   const text = getTypableText(message);
-  if (text) weight += text.length * 0.004;
-  if (message.video) weight += 2.5;
-  if (message.image) weight += 2;
-  if (isIncomingSender(message.sender)) weight += 1.25;
-  return Math.max(weight, 0.25);
+  if (text) weight += text.length * 0.0032;
+  if (isIncomingSender(message.sender)) weight += 0.28;
+  return Math.max(weight, 0.16);
 }
 
 function resolveWeights(
