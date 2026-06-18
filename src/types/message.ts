@@ -67,4 +67,7 @@ export type VideoModalPayload = {
   title?: string;
   shareUrl?: string;
   thumbnail?: string;
+  /** Opened by auto-scroll intercept — closing resumes playback. */
+  resumeAutoScroll?: boolean;
+  messageId?: string;
 };

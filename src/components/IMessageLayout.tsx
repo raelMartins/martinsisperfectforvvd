@@ -47,12 +47,12 @@ function IMessageShell({ activeConversation, messages }: IMessageLayoutProps) {
               />
               <ChatThread />
               <ChatFooter />
+              <VideoPlayerModal />
             </AutoScrollProvider>
           </ConversationProvider>
         </div>
       </div>
 
-      <VideoPlayerModal />
       <PromptGalleryModal />
     </div>
   );

@@ -1,17 +1,27 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
+import { useAutoScroll } from "@/context/AutoScrollContext";
 import { useModal } from "@/context/ModalContext";
 
 export default function VideoPlayerModal() {
   const { videoModal, closeVideoModal } = useModal();
+  const { play } = useAutoScroll();
+
+  const handleClose = useCallback(() => {
+    const shouldResume = videoModal?.resumeAutoScroll;
+    closeVideoModal();
+    if (shouldResume) {
+      requestAnimationFrame(() => play());
+    }
+  }, [closeVideoModal, play, videoModal?.resumeAutoScroll]);
 
   useEffect(() => {
     if (!videoModal) return;
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") closeVideoModal();
+      if (event.key === "Escape") handleClose();
     };
 
     document.body.style.overflow = "hidden";
@@ -21,7 +31,7 @@ export default function VideoPlayerModal() {
       document.body.style.overflow = "";
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [videoModal, closeVideoModal]);
+  }, [videoModal, handleClose]);
 
   return (
     <AnimatePresence>
@@ -32,7 +42,7 @@ export default function VideoPlayerModal() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.22 }}
+          transition={{ duration: 0.2 }}
         >
           <motion.button
             type="button"
@@ -41,7 +51,7 @@ export default function VideoPlayerModal() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={closeVideoModal}
+            onClick={handleClose}
           />
 
           <motion.div
@@ -49,10 +59,10 @@ export default function VideoPlayerModal() {
             aria-modal="true"
             aria-label={videoModal.title ?? "Video player"}
             className="relative z-10 w-full max-w-5xl overflow-hidden rounded-2xl bg-black shadow-[0_32px_80px_rgba(0,0,0,0.55)]"
-            initial={{ opacity: 0, scale: 0.88, y: 24 }}
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.92, y: 16 }}
-            transition={{ type: "spring", stiffness: 340, damping: 30 }}
+            exit={{ opacity: 0, scale: 0.94, y: 12 }}
+            transition={{ type: "spring", stiffness: 380, damping: 32 }}
           >
             <div className="flex items-center justify-between border-b border-white/10 bg-[#1c1c1e] px-4 py-3">
               <p className="truncate text-sm font-medium text-white/90">
@@ -60,7 +70,7 @@ export default function VideoPlayerModal() {
               </p>
               <button
                 type="button"
-                onClick={closeVideoModal}
+                onClick={handleClose}
                 className="flex h-8 w-8 items-center justify-center rounded-full text-white/70 transition-colors hover:bg-white/10 hover:text-white"
                 aria-label="Close"
               >
@@ -83,11 +93,22 @@ export default function VideoPlayerModal() {
               <iframe
                 src={`${videoModal.embedUrl}?autoplay=1`}
                 title={videoModal.title ?? "Video"}
-                className="absolute inset-0 h-full w-full"
+                className="absolute inset-0 h-full w-full border-0"
                 allowFullScreen
                 allow="autoplay; fullscreen; picture-in-picture"
               />
             </div>
+
+            {videoModal.resumeAutoScroll ? (
+              <motion.p
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.15, duration: 0.2 }}
+                className="border-t border-white/10 bg-[#1c1c1e] px-4 py-3 text-center text-sm font-medium text-white/55"
+              >
+                Close video to resume chat
+              </motion.p>
+            ) : null}
           </motion.div>
         </motion.div>
       ) : null}

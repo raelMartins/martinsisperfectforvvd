@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
 import { AUTO_SCROLL } from "@/constants/autoScroll";
 
 function getMaxScrollY() {
@@ -17,6 +17,7 @@ function prefersReducedMotion() {
 
 export type AutoScrollEngine = {
   isPlaying: boolean;
+  isPlayingRef: RefObject<boolean>;
   play: () => void;
   pause: () => void;
   toggle: () => void;
@@ -156,5 +157,5 @@ export function useAutoScrollEngine(): AutoScrollEngine {
     };
   }, [pause]);
 
-  return { isPlaying, play, pause, toggle };
+  return { isPlaying, isPlayingRef, play, pause, toggle };
 }

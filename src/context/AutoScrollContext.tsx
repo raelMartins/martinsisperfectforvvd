@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, type ReactNode } from "react";
+import VideoScrollIntercept from "@/components/VideoScrollIntercept";
 import {
   useAutoScrollEngine,
   type AutoScrollEngine,
@@ -17,6 +18,7 @@ export function AutoScrollProvider({ children }: AutoScrollProviderProps) {
 
   return (
     <AutoScrollContext.Provider value={engine}>
+      <VideoScrollIntercept />
       {children}
     </AutoScrollContext.Provider>
   );
