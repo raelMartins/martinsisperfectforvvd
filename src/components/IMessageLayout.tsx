@@ -8,6 +8,7 @@ import PromptGalleryModal from "@/components/PromptGalleryModal";
 import VideoPlayerModal from "@/components/VideoPlayerModal";
 import { LAYOUT } from "@/constants/layout";
 import { ConversationProvider } from "@/context/ConversationContext";
+import { AutoScrollProvider } from "@/context/AutoScrollContext";
 import { ModalProvider } from "@/context/ModalContext";
 import { MotionProvider } from "@/context/MotionContext";
 import { ThemeProvider, useTheme } from "@/context/ThemeContext";
@@ -39,12 +40,14 @@ function IMessageShell({ activeConversation, messages }: IMessageLayoutProps) {
           style={{ maxWidth: LAYOUT.columnMaxWidth }}
         >
           <ConversationProvider messages={messages}>
-            <ChatHeader
-              conversation={activeConversation}
-              unreadCount={messages.length}
-            />
-            <ChatThread />
-            <ChatFooter />
+            <AutoScrollProvider>
+              <ChatHeader
+                conversation={activeConversation}
+                unreadCount={messages.length}
+              />
+              <ChatThread />
+              <ChatFooter />
+            </AutoScrollProvider>
           </ConversationProvider>
         </div>
       </div>

@@ -5,6 +5,7 @@ import { useEffect, useRef } from "react";
 import { useTheme } from "@/context/ThemeContext";
 import { useConversation } from "@/context/ConversationContext";
 import { LAYOUT } from "@/constants/layout";
+import PlayPauseButton from "@/components/PlayPauseButton";
 
 export default function ChatFooter() {
   const { colors, theme } = useTheme();
@@ -50,25 +51,7 @@ export default function ChatFooter() {
       style={{ height: LAYOUT.footerHeight }}
     >
       <div className="flex h-full items-center gap-5 px-8 py-2">
-        <button
-          type="button"
-          aria-label="Add attachment"
-          className="flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-full transition-opacity hover:opacity-80"
-          style={{ backgroundColor: colors.theirBubble }}
-        >
-          <svg
-            width="28"
-            height="28"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke={colors.muted}
-            strokeWidth="2"
-            strokeLinecap="round"
-            aria-hidden
-          >
-            <path d="M12 5v14M5 12h14" />
-          </svg>
-        </button>
+        <PlayPauseButton />
 
         <div
           className="flex h-[64px] flex-1 items-center rounded-full px-7"
