@@ -1,11 +1,16 @@
 "use client";
 
 import { useMotionValueEvent, useTransform } from "framer-motion";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useTheme } from "@/context/ThemeContext";
 import { useConversation } from "@/context/ConversationContext";
 import { LAYOUT } from "@/constants/layout";
 import PlayPauseButton from "@/components/PlayPauseButton";
+
+function scrollDraftToEnd(viewport: HTMLDivElement | null) {
+  if (!viewport) return;
+  viewport.scrollLeft = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+}
 
 export default function ChatFooter() {
   const { colors, theme } = useTheme();
@@ -13,32 +18,33 @@ export default function ChatFooter() {
 
   const draftRef = useRef<HTMLSpanElement>(null);
   const placeholderRef = useRef<HTMLSpanElement>(null);
-  const textContainerRef = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const textColorRef = useRef<HTMLDivElement>(null);
 
   const textColor = useTransform(isComposing, (length) =>
     length > 0 ? colors.text : colors.muted,
   );
 
-  useMotionValueEvent(composerDraft, "change", (draft) => {
+  const syncDraft = useCallback((draft: string) => {
     if (draftRef.current) draftRef.current.textContent = draft;
     if (placeholderRef.current) placeholderRef.current.hidden = draft.length > 0;
-    if (draftRef.current) draftRef.current.hidden = draft.length === 0;
-  });
+    if (viewportRef.current) viewportRef.current.hidden = draft.length === 0;
+    scrollDraftToEnd(viewportRef.current);
+  }, []);
+
+  useMotionValueEvent(composerDraft, "change", syncDraft);
 
   useMotionValueEvent(textColor, "change", (color) => {
-    if (textContainerRef.current) textContainerRef.current.style.color = color;
+    if (textColorRef.current) textColorRef.current.style.color = color;
   });
 
   useEffect(() => {
-    const draft = composerDraft.get();
-    if (draftRef.current) draftRef.current.textContent = draft;
-    if (placeholderRef.current) placeholderRef.current.hidden = draft.length > 0;
-    if (draftRef.current) draftRef.current.hidden = draft.length === 0;
-    if (textContainerRef.current) {
-      textContainerRef.current.style.color =
+    syncDraft(composerDraft.get());
+    if (textColorRef.current) {
+      textColorRef.current.style.color =
         isComposing.get() > 0 ? colors.text : colors.muted;
     }
-  }, [colors.muted, colors.text, composerDraft, isComposing]);
+  }, [colors.muted, colors.text, composerDraft, isComposing, syncDraft]);
 
   const glassClass =
     theme === "dark"
@@ -47,39 +53,44 @@ export default function ChatFooter() {
 
   return (
     <footer
-      className={`relative z-20 w-full shrink-0 border-t backdrop-blur-md ${glassClass}`}
-      style={{ height: LAYOUT.footerHeight }}
+      className={`relative z-20 w-full shrink-0 border-t backdrop-blur-md ${glassClass} ${LAYOUT.footerHeightClass}`}
     >
-      <div className="flex h-full items-center gap-5 px-8 py-2">
+      <div className="flex h-full items-center gap-2.5 px-3 py-1.5 sm:gap-4 sm:px-5 md:gap-5 md:px-8 md:py-2">
         <PlayPauseButton />
 
         <div
-          className="flex h-[64px] flex-1 items-center rounded-full px-7"
+          className="flex h-9 min-w-0 flex-1 items-center rounded-full px-3 sm:h-11 sm:px-5 md:h-12 md:px-6 lg:h-[64px] lg:px-7"
           style={{ backgroundColor: colors.theirBubble }}
         >
           <div
-            ref={textContainerRef}
-            className="flex min-w-0 flex-1 items-center text-xl font-normal"
+            ref={textColorRef}
+            className="relative min-h-0 min-w-0 flex-1 text-sm leading-none font-normal sm:text-base lg:text-xl"
             style={{ color: colors.muted }}
             aria-live="polite"
             aria-label="Message input"
           >
-            <span ref={placeholderRef}>iMessage</span>
-            <span
-              ref={draftRef}
-              className="truncate whitespace-pre-wrap"
+            <span ref={placeholderRef} className="block truncate">
+              iMessage
+            </span>
+            <div
+              ref={viewportRef}
               hidden
-            />
+              className="absolute inset-0 overflow-x-auto overflow-y-hidden [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+            >
+              <span
+                ref={draftRef}
+                className="inline-block whitespace-nowrap"
+              />
+            </div>
           </div>
           <button
             type="button"
             aria-label="Voice message"
-            className="ml-3 shrink-0 transition-opacity hover:opacity-80"
+            className="ml-2 shrink-0 transition-opacity hover:opacity-80 sm:ml-3"
             style={{ color: colors.muted }}
           >
             <svg
-              width="28"
-              height="28"
+              className="h-5 w-5 sm:h-6 sm:w-6 lg:h-7 lg:w-7"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"

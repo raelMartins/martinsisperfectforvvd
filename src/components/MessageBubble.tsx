@@ -29,7 +29,7 @@ function MessageText({ message, isMe }: { message: Message; isMe: boolean }) {
     };
 
     return (
-      <p className="whitespace-pre-wrap break-words text-[26px] leading-[1.38] sm:text-[28px] lg:text-[30px]">
+      <p className="whitespace-pre-wrap break-words text-[15px] leading-[1.35] sm:text-[20px] md:text-[26px] lg:text-[30px] lg:leading-[1.38]">
         {before}
         <button
           type="button"
@@ -51,7 +51,7 @@ function MessageText({ message, isMe }: { message: Message; isMe: boolean }) {
 
   if (message.text) {
     return (
-      <p className="whitespace-pre-wrap break-words text-[26px] leading-[1.38] sm:text-[28px] lg:text-[30px]">
+      <p className="whitespace-pre-wrap break-words text-[15px] leading-[1.35] sm:text-[20px] md:text-[26px] lg:text-[30px] lg:leading-[1.38]">
         {message.text}
       </p>
     );
@@ -104,13 +104,13 @@ export default function MessageBubble({
   const content = (
     <div
       className={[
-        "flex max-w-[min(100%,68%)] flex-col",
+        "flex max-w-[min(100%,82%)] flex-col sm:max-w-[min(100%,75%)] lg:max-w-[min(100%,68%)]",
         isMe ? "items-end" : "items-start",
       ].join(" ")}
     >
         {showSenderName && !isMe ? (
           <span
-            className="mb-2 px-4 text-lg font-medium sm:text-xl"
+            className="mb-1 px-2 text-xs font-medium sm:mb-1.5 sm:px-3 sm:text-sm md:text-base lg:mb-2 lg:px-4 lg:text-xl"
             style={{ color: colors.muted }}
           >
             {SENDER_LABELS[message.sender]}
@@ -120,7 +120,7 @@ export default function MessageBubble({
         {hasText ? (
           <div
             className={[
-              "rounded-[28px] px-7 py-4 sm:px-8 sm:py-5",
+              "rounded-[18px] px-4 py-2.5 sm:rounded-[22px] sm:px-5 sm:py-3 md:rounded-[26px] md:px-6 md:py-3.5 lg:rounded-[28px] lg:px-8 lg:py-5",
               isMe ? "rounded-br-lg" : "rounded-bl-lg",
             ].join(" ")}
             style={{

@@ -16,7 +16,7 @@ type VideoAttachmentBubbleProps = {
 };
 
 const ATTACHMENT_CLASS =
-  "w-full min-w-[300px] max-w-[480px] sm:min-w-[360px] sm:max-w-[520px]";
+  "w-full min-w-0 max-w-[min(100%,260px)] sm:max-w-[340px] md:max-w-[420px] lg:min-w-[300px] lg:max-w-[480px] xl:max-w-[520px]";
 
 const LAYOUT_TRANSITION = {
   type: "spring" as const,
@@ -75,7 +75,7 @@ function LoomInlineEmbed({
       layout="position"
       layoutId={layoutId}
       transition={LAYOUT_TRANSITION}
-      className={`relative overflow-hidden rounded-[24px] bg-[#1c1c1e] ${ATTACHMENT_CLASS}`}
+      className={`relative overflow-hidden rounded-[16px] bg-[#0B0B0C] sm:rounded-[20px] lg:rounded-[24px] ${ATTACHMENT_CLASS}`}
     >
       <div className="relative aspect-video w-full">
         <iframe
@@ -111,7 +111,7 @@ function ThumbnailFallback({
       layout="position"
       layoutId={layoutId}
       transition={LAYOUT_TRANSITION}
-      className={`relative overflow-hidden rounded-[24px] bg-[#1c1c1e] ${ATTACHMENT_CLASS}`}
+      className={`relative overflow-hidden rounded-[16px] bg-[#0B0B0C] sm:rounded-[20px] lg:rounded-[24px] ${ATTACHMENT_CLASS}`}
     >
       <div className="relative aspect-video w-full">
         {thumbnail ? (

@@ -24,7 +24,7 @@ function IMessageShell({ activeConversation, messages }: IMessageLayoutProps) {
 
   return (
     <div
-      className="relative w-full"
+      className="relative w-full bg-black"
       style={{
         height: LAYOUT.scrubTrackHeight,
         backgroundColor: colors.chatBg,
@@ -34,7 +34,7 @@ function IMessageShell({ activeConversation, messages }: IMessageLayoutProps) {
       <BackgroundCanvas />
 
       {/* Sticky camera — UI never leaves the viewport */}
-      <div className="sticky top-0 h-screen w-full overflow-hidden">
+      <div className="sticky top-0 h-[100dvh] w-full overflow-hidden bg-black">
         <div
           className="relative mx-auto flex h-full w-full flex-col"
           style={{ maxWidth: LAYOUT.columnMaxWidth }}

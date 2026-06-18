@@ -33,20 +33,18 @@ export default function ChatHeader({
 
   return (
     <header
-      className={`relative z-20 w-full shrink-0 border-b backdrop-blur-md ${glassClass}`}
-      style={{ height: LAYOUT.headerHeight }}
+      className={`relative z-20 w-full shrink-0 border-b backdrop-blur-md ${glassClass} ${LAYOUT.headerHeightClass}`}
     >
-      <div className="flex h-full flex-col px-8 pt-4 pb-3">
+      <div className="flex h-full flex-col px-4 pt-2 pb-2 sm:px-6 sm:pt-3 md:px-8 md:pt-4 md:pb-3">
         <div className="grid grid-cols-[1fr_auto_1fr] items-start">
-          <div className="flex items-center gap-2 pt-0.5">
+          <div className="flex items-center gap-1.5 pt-0.5 sm:gap-2">
             <button
               type="button"
               aria-label="Back"
               className="flex items-center text-[#0A84FF] transition-opacity hover:opacity-80"
             >
               <svg
-                width="28"
-                height="28"
+                className="h-5 w-5 sm:h-6 sm:w-6 lg:h-7 lg:w-7"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -57,7 +55,7 @@ export default function ChatHeader({
               >
                 <path d="M15 18l-6-6 6-6" />
               </svg>
-              <span className="flex h-8 min-w-8 items-center justify-center rounded-full bg-[#0A84FF] px-2 text-base font-semibold text-white">
+              <span className="flex h-6 min-w-6 items-center justify-center rounded-full bg-[#0A84FF] px-1.5 text-xs font-semibold text-white sm:h-7 sm:min-w-7 sm:px-2 sm:text-sm lg:h-8 lg:min-w-8 lg:text-base">
                 {unreadCount}
               </span>
             </button>
@@ -65,24 +63,23 @@ export default function ChatHeader({
 
           <div className="flex flex-col items-center">
             <div
-              className="flex h-[72px] w-[72px] items-center justify-center rounded-full text-2xl font-medium text-white/90"
+              className="flex h-11 w-11 items-center justify-center rounded-full text-sm font-medium text-white/90 sm:h-14 sm:w-14 sm:text-lg md:h-16 md:w-16 md:text-xl lg:h-[72px] lg:w-[72px] lg:text-2xl"
               style={{ backgroundColor: colors.theirBubble }}
             >
               {initials}
             </div>
             <button
               type="button"
-              className="mt-2 flex items-center gap-1 transition-opacity hover:opacity-80"
+              className="mt-1 flex items-center gap-1 transition-opacity hover:opacity-80 sm:mt-1.5 lg:mt-2"
             >
               <span
-                className="text-xl font-semibold tracking-tight"
+                className="text-sm font-semibold tracking-tight sm:text-base md:text-lg lg:text-xl"
                 style={{ color: colors.text }}
               >
                 {conversation.title}
               </span>
               <svg
-                width="14"
-                height="14"
+                className="h-3 w-3 sm:h-3.5 sm:w-3.5"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke={colors.muted}
@@ -96,16 +93,15 @@ export default function ChatHeader({
             </button>
           </div>
 
-          <div className="flex items-start justify-end gap-1.5 pt-0.5">
-            <ThemeToggle iconSize={22} />
+          <div className="flex items-start justify-end gap-1 pt-0.5 sm:gap-1.5">
+            <ThemeToggle iconSize={20} className="h-8 w-8 sm:h-9 sm:w-9 lg:h-10 lg:w-10" />
             <button
               type="button"
               aria-label="Video call"
               className="text-[#0A84FF] transition-opacity hover:opacity-80"
             >
               <svg
-                width="30"
-                height="30"
+                className="h-6 w-6 sm:h-7 sm:w-7 lg:h-[30px] lg:w-[30px]"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
