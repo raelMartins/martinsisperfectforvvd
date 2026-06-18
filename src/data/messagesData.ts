@@ -1,5 +1,5 @@
 import type { Conversation, Message } from "@/types/message";
-import { loomShareUrl, loomThumbnailUrl } from "@/lib/loom";
+import { loomShareUrl, loomThumbnailUrl, loomEmbedUrl } from "@/lib/loom";
 
 const LOOM_INTRO_ID = "4287b0e0f9b745339206340682040106";
 const LOOM_PROJECT_ID = "40049d7eb1f942fb9324b32b7df7b1e1";
@@ -48,6 +48,7 @@ export const messages: Message[] = [
     id: "msg-007",
     sender: "me",
     video: {
+      embedUrl: loomEmbedUrl(LOOM_INTRO_ID),
       shareUrl: loomShareUrl(LOOM_INTRO_ID),
       thumbnail: loomThumbnailUrl(LOOM_INTRO_ID),
       provider: "loom",
@@ -151,6 +152,7 @@ export const messages: Message[] = [
     id: "msg-024",
     sender: "me",
     video: {
+      embedUrl: loomEmbedUrl(LOOM_PROJECT_ID),
       shareUrl: loomShareUrl(LOOM_PROJECT_ID),
       thumbnail: loomThumbnailUrl(LOOM_PROJECT_ID),
       provider: "loom",

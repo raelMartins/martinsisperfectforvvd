@@ -14,11 +14,16 @@ export const INCOMING_PHASE_A_END = 0.42;
 export const MEDIA_PHASE_A_END = 0.12;
 
 export function getPhaseAEnd(message: Message): number {
+  if (message.video && !getTypableText(message)) return 0;
   if (message.sender === "me") {
     return getTypableText(message) ? OUTGOING_PHASE_A_END : MEDIA_PHASE_A_END;
   }
   if (isIncomingSender(message.sender)) return INCOMING_PHASE_A_END;
   return OUTGOING_PHASE_A_END;
+}
+
+function isVideoOnlyMessage(message: Message): boolean {
+  return Boolean(message.video && !getTypableText(message));
 }
 
 export function getComposeCharIndex(
@@ -46,6 +51,16 @@ export function resolveMessagePhase(
   };
 
   if (!progress || progress.localProgress <= 0) return idle;
+
+  if (isVideoOnlyMessage(message)) {
+    return {
+      phase: "phase-b",
+      composeCharIndex: 0,
+      mountBubble: true,
+      showTyping: false,
+    };
+  }
+
   if (progress.status === "complete") {
     return {
       phase: "phase-b",

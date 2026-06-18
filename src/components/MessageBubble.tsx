@@ -60,9 +60,20 @@ function MessageText({ message, isMe }: { message: Message; isMe: boolean }) {
   return null;
 }
 
-function MessageMedia({ message }: { message: Message }) {
+function MessageMedia({
+  message,
+  layoutId,
+}: {
+  message: Message;
+  layoutId?: string;
+}) {
   if (message.video) {
-    return <VideoAttachmentBubble video={message.video} />;
+    return (
+      <VideoAttachmentBubble
+        video={message.video}
+        layoutId={layoutId ? `${layoutId}-video` : undefined}
+      />
+    );
   }
 
   if (message.image) {
@@ -123,7 +134,7 @@ export default function MessageBubble({
 
         {hasMedia ? (
           <div className={hasText ? "mt-2" : ""}>
-            <MessageMedia message={message} />
+            <MessageMedia message={message} layoutId={layoutId} />
           </div>
         ) : null}
       </div>

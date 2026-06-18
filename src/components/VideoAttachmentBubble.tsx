@@ -3,10 +3,25 @@
 import { motion } from "framer-motion";
 import type { VideoAttachment } from "@/types/message";
 import { useModal } from "@/context/ModalContext";
-import { loomEmbedUrl, loomIdFromShareUrl, loomThumbnailUrl } from "@/lib/loom";
+import {
+  loomEmbedSrc,
+  loomIdFromShareUrl,
+  loomThumbnailUrl,
+  resolveLoomEmbedUrl,
+} from "@/lib/loom";
 
 type VideoAttachmentBubbleProps = {
   video: VideoAttachment;
+  layoutId?: string;
+};
+
+const ATTACHMENT_CLASS =
+  "w-full min-w-[300px] max-w-[480px] sm:min-w-[360px] sm:max-w-[520px]";
+
+const LAYOUT_TRANSITION = {
+  type: "spring" as const,
+  stiffness: 420,
+  damping: 32,
 };
 
 function PlayButton() {
@@ -26,57 +41,70 @@ function PlayButton() {
   );
 }
 
-function resolveVideoPayload(video: VideoAttachment) {
-  if (video.embedUrl) {
-    return {
-      embedUrl: video.embedUrl,
-      shareUrl: video.shareUrl,
-      thumbnail: video.thumbnail,
-      title: video.title,
-    };
-  }
+function LoomEmbedPlayer({
+  embedUrl,
+  title,
+  layoutId,
+}: {
+  embedUrl: string;
+  title?: string;
+  layoutId?: string;
+}) {
+  const src = loomEmbedSrc(embedUrl);
 
-  if (video.shareUrl && video.provider === "loom") {
-    const id = loomIdFromShareUrl(video.shareUrl);
-    return {
-      embedUrl: loomEmbedUrl(id),
-      shareUrl: video.shareUrl,
-      thumbnail: video.thumbnail ?? loomThumbnailUrl(id),
-      title: video.title,
-    };
-  }
-
-  if (video.src) {
-    return {
-      embedUrl: video.src,
-      shareUrl: video.shareUrl,
-      thumbnail: video.thumbnail,
-      title: video.title,
-    };
-  }
-
-  return null;
+  return (
+    <motion.div
+      layout="position"
+      layoutId={layoutId}
+      transition={LAYOUT_TRANSITION}
+      className={`relative overflow-hidden rounded-[24px] bg-[#1c1c1e] ${ATTACHMENT_CLASS}`}
+    >
+      <div className="relative aspect-video w-full">
+        <iframe
+          src={src}
+          title={title ?? "Loom video"}
+          className="absolute inset-0 h-full w-full border-0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowFullScreen
+        />
+      </div>
+    </motion.div>
+  );
 }
 
-export default function VideoAttachmentBubble({
+function ThumbnailPlayer({
   video,
-}: VideoAttachmentBubbleProps) {
+  layoutId,
+}: {
+  video: VideoAttachment;
+  layoutId?: string;
+}) {
   const { openVideoModal } = useModal();
-  const payload = resolveVideoPayload(video);
 
-  if (!payload) return null;
+  const embedUrl = video.embedUrl ?? video.src;
+  if (!embedUrl) return null;
 
   const thumbnail =
-    payload.thumbnail ??
+    video.thumbnail ??
     (video.shareUrl && video.provider === "loom"
       ? loomThumbnailUrl(loomIdFromShareUrl(video.shareUrl))
       : undefined);
 
   return (
-    <button
+    <motion.button
       type="button"
-      onClick={() => openVideoModal(payload)}
-      className="group relative block w-full min-w-[300px] max-w-[480px] overflow-hidden rounded-[24px] text-left sm:min-w-[360px] sm:max-w-[520px]"
+      layout="position"
+      layoutId={layoutId}
+      transition={LAYOUT_TRANSITION}
+      onClick={() =>
+        openVideoModal({
+          embedUrl,
+          shareUrl: video.shareUrl,
+          thumbnail: video.thumbnail,
+          title: video.title,
+        })
+      }
+      className={`group relative block overflow-hidden rounded-[24px] text-left ${ATTACHMENT_CLASS}`}
       aria-label={video.title ? `Play video: ${video.title}` : "Play video"}
     >
       <div className="relative aspect-[4/3] w-full bg-[#1c1c1e]">
@@ -103,6 +131,25 @@ export default function VideoAttachmentBubble({
           </motion.div>
         </div>
       </div>
-    </button>
+    </motion.button>
   );
+}
+
+export default function VideoAttachmentBubble({
+  video,
+  layoutId,
+}: VideoAttachmentBubbleProps) {
+  const loomEmbedUrl = resolveLoomEmbedUrl(video);
+
+  if (loomEmbedUrl) {
+    return (
+      <LoomEmbedPlayer
+        embedUrl={loomEmbedUrl}
+        title={video.title}
+        layoutId={layoutId}
+      />
+    );
+  }
+
+  return <ThumbnailPlayer video={video} layoutId={layoutId} />;
 }
