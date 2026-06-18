@@ -54,7 +54,6 @@ export function ConversationProvider({
 
   const revealedCountRef = useRef(0);
   const isProcessingRef = useRef(false);
-  const isAutoScrollingRef = useRef(false);
   const awaitingUserScrollRef = useRef(false);
   const userScrolledRef = useRef(false);
   const hasStartedRef = useRef(false);
@@ -68,25 +67,6 @@ export function ConversationProvider({
     const doc = document.documentElement;
     setScrollMetrics(window.scrollY, doc.scrollHeight, window.innerHeight);
   }, [setScrollMetrics]);
-
-  const scrollToBottom = useCallback(
-    (behavior: ScrollBehavior = "smooth") => {
-      isAutoScrollingRef.current = true;
-      window.scrollTo({
-        top: document.documentElement.scrollHeight,
-        behavior,
-      });
-
-      window.setTimeout(
-        () => {
-          isAutoScrollingRef.current = false;
-          updateScrollMotion();
-        },
-        behavior === "smooth" ? 500 : 50,
-      );
-    },
-    [updateScrollMotion],
-  );
 
   const isNearBottom = useCallback(() => {
     const doc = document.documentElement;
@@ -142,7 +122,6 @@ export function ConversationProvider({
         }
       } else if (isIncomingSender(nextMessage.sender)) {
         setShowIncomingTyping(true);
-        requestAnimationFrame(() => scrollToBottom());
         await delay(INCOMING_TYPING_MS);
         if (typingAbortRef.current !== session) return;
 
@@ -154,16 +133,14 @@ export function ConversationProvider({
 
       awaitingUserScrollRef.current = true;
       userScrolledRef.current = false;
-      requestAnimationFrame(() => scrollToBottom());
     } finally {
       isProcessingRef.current = false;
     }
-  }, [messages, revealMessageAt, scrollToBottom, typeInComposer]);
+  }, [messages, revealMessageAt, typeInComposer]);
 
   const tryAdvance = useCallback(() => {
     if (
       isProcessingRef.current ||
-      isAutoScrollingRef.current ||
       revealedCountRef.current >= messages.length
     ) {
       return;
@@ -189,22 +166,16 @@ export function ConversationProvider({
   }, [processNextMessage]);
 
   useEffect(() => {
-    requestAnimationFrame(() => scrollToBottom("auto"));
-  }, [revealedCount, showIncomingTyping, inputDraft, scrollToBottom]);
-
-  useEffect(() => {
     updateScrollMotion();
   }, [revealedCount, showIncomingTyping, inputDraft, updateScrollMotion]);
 
   useEffect(() => {
     const onScroll = () => {
       updateScrollMotion();
-      if (isAutoScrollingRef.current) return;
       tryAdvance();
     };
 
     const onWheel = () => {
-      if (isAutoScrollingRef.current) return;
       userScrolledRef.current = true;
       tryAdvance();
     };
