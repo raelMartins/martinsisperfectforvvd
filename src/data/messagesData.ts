@@ -1,8 +1,8 @@
 import type { Conversation, Message } from "@/types/message";
 import { loomShareUrl, loomThumbnailUrl, loomEmbedUrl } from "@/lib/loom";
 
-const LOOM_INTRO_ID = "4287b0e0f9b745339206340682040106";
-const LOOM_PROJECT_ID = "40049d7eb1f942fb9324b32b7df7b1e1";
+const LOOM_INTRO_ID = "e43c12742e834d6087cc05605cd7a121";
+const LOOM_PROJECT_ID = "962becb1b0294c0ba3cb31b32eff9e24";
 
 export const conversation: Conversation = {
   id: "vvd-product-engineer",
