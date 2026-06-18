@@ -4,5 +4,5 @@ export const LAYOUT = {
   footerHeight: 108,
   columnMaxWidth: 1800,
   /** Invisible scrub track — only the browser scrollbar moves. */
-  scrubTrackHeight: "1000vh",
+  scrubTrackHeight: "2000vh",
 } as const;
