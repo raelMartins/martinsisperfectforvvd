@@ -1,23 +1,23 @@
 "use client";
 
 import BackgroundCanvas from "@/components/BackgroundCanvas";
-import Sidebar from "@/components/Sidebar";
-import ChatWindow from "@/components/ChatWindow";
+import ChatFooter from "@/components/ChatFooter";
+import ChatHeader from "@/components/ChatHeader";
+import ChatThread from "@/components/ChatThread";
 import PromptGalleryModal from "@/components/PromptGalleryModal";
 import VideoPlayerModal from "@/components/VideoPlayerModal";
+import { LAYOUT } from "@/constants/layout";
 import { ModalProvider } from "@/context/ModalContext";
 import { MotionProvider } from "@/context/MotionContext";
 import { ThemeProvider, useTheme } from "@/context/ThemeContext";
 import type { Conversation, Message } from "@/types/message";
 
 type IMessageLayoutProps = {
-  conversations: Conversation[];
   activeConversation: Conversation;
   messages: Message[];
 };
 
 function IMessageShell({
-  conversations,
   activeConversation,
   messages,
 }: IMessageLayoutProps) {
@@ -25,23 +25,22 @@ function IMessageShell({
 
   return (
     <div
-      className="relative flex h-dvh w-full overflow-hidden p-3 transition-colors duration-300"
-      style={{ backgroundColor: colors.appBg }}
+      className="relative min-h-screen w-full transition-colors duration-300"
+      style={{ backgroundColor: colors.chatBg }}
       data-theme={theme}
     >
       <BackgroundCanvas />
 
-      <div className="relative z-10 mx-auto flex h-full w-full max-w-6xl overflow-hidden rounded-xl border shadow-[0_18px_50px_rgba(0,0,0,0.35)] transition-colors duration-300"
-        style={{
-          backgroundColor: colors.windowBg,
-          borderColor: colors.border,
-        }}
+      <div
+        className="relative mx-auto w-full"
+        style={{ maxWidth: LAYOUT.columnMaxWidth }}
       >
-        <Sidebar
-          conversations={conversations}
-          activeId={activeConversation.id}
+        <ChatHeader
+          conversation={activeConversation}
+          unreadCount={messages.length}
         />
-        <ChatWindow conversation={activeConversation} messages={messages} />
+        <ChatThread messages={messages} />
+        <ChatFooter />
       </div>
 
       <VideoPlayerModal />

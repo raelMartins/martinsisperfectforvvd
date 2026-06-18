@@ -14,11 +14,11 @@ export default function ImageAttachmentBubble({
   const isMulti = image.images.length > 1;
 
   return (
-    <div className="w-full min-w-[220px] max-w-[280px]">
+    <div className="w-full min-w-[300px] max-w-[520px] sm:min-w-[360px]">
       <div
         className={[
-          "overflow-hidden rounded-[18px]",
-          isMulti ? "grid grid-cols-2 gap-0.5" : "",
+          "overflow-hidden rounded-[24px]",
+          isMulti ? "grid grid-cols-2 gap-1" : "",
         ].join(" ")}
       >
         {image.images.map((item, index) => (
@@ -27,9 +27,9 @@ export default function ImageAttachmentBubble({
             className={[
               "relative overflow-hidden bg-[#1c1c1e]",
               isMulti ? "aspect-square" : "aspect-[4/5]",
-              isMulti && index === 0 ? "rounded-tl-[18px]" : "",
-              isMulti && index === 1 ? "rounded-tr-[18px]" : "",
-              !isMulti ? "rounded-[18px]" : "",
+              isMulti && index === 0 ? "rounded-tl-[24px]" : "",
+              isMulti && index === 1 ? "rounded-tr-[24px]" : "",
+              !isMulti ? "rounded-[24px]" : "",
             ].join(" ")}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -44,7 +44,7 @@ export default function ImageAttachmentBubble({
 
       {image.caption ? (
         <p
-          className="mt-1.5 max-w-[280px] px-1 text-[12px] leading-snug"
+          className="mt-3 max-w-[520px] px-2 text-lg leading-snug sm:text-xl"
           style={{ color: colors.muted }}
         >
           {image.caption}

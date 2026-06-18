@@ -13,13 +13,7 @@ type MessageBubbleProps = {
   showSenderName?: boolean;
 };
 
-function MessageText({
-  message,
-  isMe,
-}: {
-  message: Message;
-  isMe: boolean;
-}) {
+function MessageText({ message, isMe }: { message: Message; isMe: boolean }) {
   const { colors } = useTheme();
   const { openPromptGallery } = useModal();
 
@@ -33,11 +27,11 @@ function MessageText({
     };
 
     return (
-      <p className="whitespace-pre-wrap break-words text-[15px] leading-[1.35]">
+      <p className="whitespace-pre-wrap break-words text-[26px] leading-[1.38] sm:text-[28px] lg:text-[30px]">
         {before}
         <button
           type="button"
-          className="font-medium underline underline-offset-2"
+          className="font-medium underline underline-offset-[3px]"
           style={{
             color: isMe ? colors.meText : colors.link,
             textDecorationColor: isMe
@@ -55,7 +49,7 @@ function MessageText({
 
   if (message.text) {
     return (
-      <p className="whitespace-pre-wrap break-words text-[15px] leading-[1.35]">
+      <p className="whitespace-pre-wrap break-words text-[26px] leading-[1.38] sm:text-[28px] lg:text-[30px]">
         {message.text}
       </p>
     );
@@ -106,13 +100,13 @@ export default function MessageBubble({
     >
       <div
         className={[
-          "flex max-w-[min(100%,72%)] flex-col",
+          "flex max-w-[min(100%,68%)] flex-col",
           isMe ? "items-end" : "items-start",
         ].join(" ")}
       >
         {showSenderName && !isMe ? (
           <span
-            className="mb-1 px-3 text-[12px] font-medium"
+            className="mb-2 px-4 text-lg font-medium sm:text-xl"
             style={{ color: colors.muted }}
           >
             {SENDER_LABELS[message.sender]}
@@ -122,8 +116,8 @@ export default function MessageBubble({
         {hasText ? (
           <div
             className={[
-              "rounded-[20px] px-3.5 py-2",
-              isMe ? "rounded-br-md" : "rounded-bl-md",
+              "rounded-[28px] px-7 py-4 sm:px-8 sm:py-5",
+              isMe ? "rounded-br-lg" : "rounded-bl-lg",
             ].join(" ")}
             style={{
               backgroundColor: isMe ? colors.meBubble : colors.theirBubble,
@@ -135,7 +129,7 @@ export default function MessageBubble({
         ) : null}
 
         {hasMedia ? (
-          <div className={hasText ? "mt-1" : ""}>
+          <div className={hasText ? "mt-2" : ""}>
             <MessageMedia message={message} />
           </div>
         ) : null}

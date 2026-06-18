@@ -5,16 +5,14 @@
     "Helvetica Neue", Arial, sans-serif;
 }
 
-html,
-body {
-  height: 100%;
-  overflow: hidden;
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
   font-family: var(--font-sans);
-  background: #0b0b0c;
+  background: #000000;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

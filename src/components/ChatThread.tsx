@@ -1,25 +1,18 @@
 "use client";
 
 import { AnimatePresence } from "framer-motion";
-import {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  type UIEvent,
-} from "react";
-import type { Conversation, Message, Sender } from "@/types/message";
+import { useCallback, useEffect, useRef, useState } from "react";
+import type { Message, Sender } from "@/types/message";
 import MessageBubble from "@/components/MessageBubble";
-import ThemeToggle from "@/components/ThemeToggle";
 import TypingIndicator from "@/components/TypingIndicator";
+import { LAYOUT } from "@/constants/layout";
 import { useMotion } from "@/context/MotionContext";
 import { useTheme } from "@/context/ThemeContext";
 
 const TYPING_DURATION_MS = 800;
-const BOTTOM_THRESHOLD_PX = 72;
+const BOTTOM_THRESHOLD_PX = 120;
 
-type ChatWindowProps = {
-  conversation: Conversation;
+type ChatThreadProps = {
   messages: Message[];
 };
 
@@ -33,13 +26,9 @@ function delay(ms: number) {
   });
 }
 
-export default function ChatWindow({
-  conversation,
-  messages,
-}: ChatWindowProps) {
+export default function ChatThread({ messages }: ChatThreadProps) {
   const { colors } = useTheme();
   const { setScrollMetrics } = useMotion();
-  const scrollRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const [revealedCount, setRevealedCount] = useState(0);
@@ -56,28 +45,36 @@ export default function ChatWindow({
     revealedCountRef.current = revealedCount;
   }, [revealedCount]);
 
-  const scrollToBottom = useCallback((behavior: ScrollBehavior = "smooth") => {
-    const container = scrollRef.current;
-    if (!container) return;
+  const updateScrollMotion = useCallback(() => {
+    const doc = document.documentElement;
+    setScrollMetrics(
+      window.scrollY,
+      doc.scrollHeight,
+      window.innerHeight,
+    );
+  }, [setScrollMetrics]);
 
+  const scrollToBottom = useCallback((behavior: ScrollBehavior = "smooth") => {
     isAutoScrollingRef.current = true;
-    container.scrollTo({
-      top: container.scrollHeight,
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
       behavior,
     });
 
-    window.setTimeout(() => {
-      isAutoScrollingRef.current = false;
-    }, behavior === "smooth" ? 450 : 50);
-  }, []);
+    window.setTimeout(
+      () => {
+        isAutoScrollingRef.current = false;
+        updateScrollMotion();
+      },
+      behavior === "smooth" ? 500 : 50,
+    );
+  }, [updateScrollMotion]);
 
   const isNearBottom = useCallback(() => {
-    const container = scrollRef.current;
-    if (!container) return false;
-
+    const doc = document.documentElement;
     return (
-      container.scrollTop + container.clientHeight >=
-      container.scrollHeight - BOTTOM_THRESHOLD_PX
+      window.scrollY + window.innerHeight >=
+      doc.scrollHeight - BOTTOM_THRESHOLD_PX
     );
   }, []);
 
@@ -137,71 +134,60 @@ export default function ChatWindow({
     requestAnimationFrame(() => scrollToBottom("auto"));
   }, [revealedCount, isTyping, scrollToBottom]);
 
-  const updateScrollMotion = useCallback(() => {
-    const container = scrollRef.current;
-    if (!container) return;
-    setScrollMetrics(
-      container.scrollTop,
-      container.scrollHeight,
-      container.clientHeight,
-    );
-  }, [setScrollMetrics]);
-
   useEffect(() => {
     updateScrollMotion();
   }, [revealedCount, isTyping, updateScrollMotion]);
 
-  const handleUserScrollIntent = useCallback(() => {
-    if (isAutoScrollingRef.current) return;
-    userScrolledRef.current = true;
-    tryRevealNext();
-  }, [tryRevealNext]);
-
-  const handleScroll = useCallback(
-    (_event: UIEvent<HTMLDivElement>) => {
+  useEffect(() => {
+    const onScroll = () => {
       updateScrollMotion();
       if (isAutoScrollingRef.current) return;
       tryRevealNext();
-    },
-    [tryRevealNext, updateScrollMotion],
-  );
+    };
+
+    const onWheel = () => {
+      if (isAutoScrollingRef.current) return;
+      userScrolledRef.current = true;
+      tryRevealNext();
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("wheel", onWheel, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("wheel", onWheel);
+    };
+  }, [tryRevealNext, updateScrollMotion]);
 
   const visibleMessages = messages.slice(0, revealedCount);
 
   return (
-    <section
-      className="flex min-w-0 flex-1 flex-col"
-      style={{ backgroundColor: colors.chatBg }}
+    <main
+      className="relative z-10 w-full px-10 sm:px-16 lg:px-24"
+      style={{
+        backgroundColor: colors.chatBg,
+        paddingTop: LAYOUT.headerHeight,
+        paddingBottom: LAYOUT.footerHeight,
+      }}
     >
-      <header
-        className="relative flex h-[52px] shrink-0 items-center justify-center border-b px-4"
-        style={{
-          backgroundColor: colors.headerBg,
-          borderColor: colors.border,
-        }}
-      >
-        <div className="text-center">
-          <h2
-            className="text-[15px] font-semibold"
-            style={{ color: colors.text }}
+      <div className="mx-auto w-full max-w-[1400px]">
+        <div className="mb-16 pt-10 text-center">
+          <p
+            className="text-2xl font-normal"
+            style={{ color: colors.muted }}
           >
-            {conversation.title}
-          </h2>
-          <p className="text-[11px]" style={{ color: colors.muted }}>
             iMessage
           </p>
+          <p
+            className="mt-1 text-2xl font-normal"
+            style={{ color: colors.muted }}
+          >
+            Today
+          </p>
         </div>
-        <ThemeToggle />
-      </header>
 
-      <div
-        ref={scrollRef}
-        className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4"
-        onScroll={handleScroll}
-        onWheel={handleUserScrollIntent}
-        onTouchMove={handleUserScrollIntent}
-      >
-        <div className="mx-auto flex max-w-3xl flex-col gap-2">
+        <div className="flex flex-col gap-5 pb-16">
           <AnimatePresence initial={false}>
             {visibleMessages.map((message, index) => {
               const previous = visibleMessages[index - 1];
@@ -223,6 +209,6 @@ export default function ChatWindow({
           <div ref={bottomRef} className="h-px shrink-0" aria-hidden />
         </div>
       </div>
-    </section>
+    </main>
   );
 }

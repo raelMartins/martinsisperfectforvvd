@@ -31,17 +31,17 @@ export type ThemeColors = {
 
 const THEMES: Record<Theme, ThemeColors> = {
   dark: {
-    appBg: "#0B0B0C",
-    windowBg: "#1C1C1E",
+    appBg: "#000000",
+    windowBg: "#000000",
     sidebarBg: "#141416",
-    chatBg: "#0B0B0C",
-    headerBg: "#141416",
+    chatBg: "#000000",
+    headerBg: "rgba(0,0,0,0.6)",
     border: "rgba(255,255,255,0.08)",
     text: "#F5F5F7",
     muted: "#8E8E93",
     meBubble: "#0A84FF",
     meText: "#FFFFFF",
-    theirBubble: "#262629",
+    theirBubble: "#3A3A3C",
     theirText: "#F5F5F7",
     link: "#64D2FF",
     activeRow: "#0A84FF",

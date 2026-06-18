@@ -10,7 +10,7 @@ const BackgroundScene = dynamic(
 export default function BackgroundCanvas() {
   return (
     <div
-      className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
+      className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
       aria-hidden
     >
       <BackgroundScene />

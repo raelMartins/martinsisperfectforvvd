@@ -11,10 +11,10 @@ type VideoAttachmentBubbleProps = {
 
 function PlayButton() {
   return (
-    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/95 shadow-[0_4px_24px_rgba(0,0,0,0.35)]">
+    <div className="flex h-20 w-20 items-center justify-center rounded-full bg-white/95 shadow-[0_6px_32px_rgba(0,0,0,0.4)] sm:h-24 sm:w-24">
       <svg
-        width="22"
-        height="22"
+        width="36"
+        height="36"
         viewBox="0 0 24 24"
         fill="#1d1d1f"
         className="ml-1"
@@ -76,7 +76,7 @@ export default function VideoAttachmentBubble({
     <button
       type="button"
       onClick={() => openVideoModal(payload)}
-      className="group relative block w-full min-w-[220px] max-w-[280px] overflow-hidden rounded-[18px] text-left"
+      className="group relative block w-full min-w-[300px] max-w-[480px] overflow-hidden rounded-[24px] text-left sm:min-w-[360px] sm:max-w-[520px]"
       aria-label={video.title ? `Play video: ${video.title}` : "Play video"}
     >
       <div className="relative aspect-[4/3] w-full bg-[#1c1c1e]">

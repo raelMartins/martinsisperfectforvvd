@@ -2,7 +2,15 @@
 
 import { useTheme } from "@/context/ThemeContext";
 
-export default function ThemeToggle() {
+type ThemeToggleProps = {
+  className?: string;
+  iconSize?: number;
+};
+
+export default function ThemeToggle({
+  className = "",
+  iconSize = 18,
+}: ThemeToggleProps) {
   const { theme, colors, toggleTheme } = useTheme();
 
   return (
@@ -10,13 +18,16 @@ export default function ThemeToggle() {
       type="button"
       onClick={toggleTheme}
       aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-      className="absolute right-4 flex h-8 w-8 items-center justify-center rounded-full transition-opacity hover:opacity-80"
+      className={[
+        "flex h-10 w-10 items-center justify-center rounded-full transition-opacity hover:opacity-80",
+        className,
+      ].join(" ")}
       style={{ color: colors.muted }}
     >
       {theme === "dark" ? (
         <svg
-          width="18"
-          height="18"
+          width={iconSize}
+          height={iconSize}
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -30,8 +41,8 @@ export default function ThemeToggle() {
         </svg>
       ) : (
         <svg
-          width="18"
-          height="18"
+          width={iconSize}
+          height={iconSize}
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
