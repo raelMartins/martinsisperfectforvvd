@@ -1,12 +1,43 @@
 "use client";
 
+import { useMotionValueEvent, useTransform } from "framer-motion";
+import { useEffect, useRef } from "react";
 import { useTheme } from "@/context/ThemeContext";
 import { useConversation } from "@/context/ConversationContext";
 import { LAYOUT } from "@/constants/layout";
 
 export default function ChatFooter() {
   const { colors, theme } = useTheme();
-  const { inputDraft, isComposing } = useConversation();
+  const { composerDraft, isComposing } = useConversation();
+
+  const draftRef = useRef<HTMLSpanElement>(null);
+  const placeholderRef = useRef<HTMLSpanElement>(null);
+  const textContainerRef = useRef<HTMLDivElement>(null);
+
+  const textColor = useTransform(isComposing, (length) =>
+    length > 0 ? colors.text : colors.muted,
+  );
+
+  useMotionValueEvent(composerDraft, "change", (draft) => {
+    if (draftRef.current) draftRef.current.textContent = draft;
+    if (placeholderRef.current) placeholderRef.current.hidden = draft.length > 0;
+    if (draftRef.current) draftRef.current.hidden = draft.length === 0;
+  });
+
+  useMotionValueEvent(textColor, "change", (color) => {
+    if (textContainerRef.current) textContainerRef.current.style.color = color;
+  });
+
+  useEffect(() => {
+    const draft = composerDraft.get();
+    if (draftRef.current) draftRef.current.textContent = draft;
+    if (placeholderRef.current) placeholderRef.current.hidden = draft.length > 0;
+    if (draftRef.current) draftRef.current.hidden = draft.length === 0;
+    if (textContainerRef.current) {
+      textContainerRef.current.style.color =
+        isComposing.get() > 0 ? colors.text : colors.muted;
+    }
+  }, [colors.muted, colors.text, composerDraft, isComposing]);
 
   const glassClass =
     theme === "dark"
@@ -15,11 +46,8 @@ export default function ChatFooter() {
 
   return (
     <footer
-      className={`fixed bottom-0 left-1/2 z-50 w-full -translate-x-1/2 border-t backdrop-blur-md ${glassClass}`}
-      style={{
-        maxWidth: LAYOUT.columnMaxWidth,
-        height: LAYOUT.footerHeight,
-      }}
+      className={`relative z-20 w-full shrink-0 border-t backdrop-blur-md ${glassClass}`}
+      style={{ height: LAYOUT.footerHeight }}
     >
       <div className="flex h-full items-center gap-5 px-8 py-2">
         <button
@@ -43,25 +71,22 @@ export default function ChatFooter() {
         </button>
 
         <div
-          className="flex h-[64px] flex-1 items-center overflow-hidden rounded-full px-7"
+          className="flex h-[64px] flex-1 items-center rounded-full px-7"
           style={{ backgroundColor: colors.theirBubble }}
         >
           <div
+            ref={textContainerRef}
             className="flex min-w-0 flex-1 items-center text-xl font-normal"
-            style={{ color: isComposing ? colors.text : colors.muted }}
+            style={{ color: colors.muted }}
             aria-live="polite"
-            aria-label={isComposing ? "Composing message" : "Message input"}
+            aria-label="Message input"
           >
-            {isComposing ? (
-              <span className="truncate whitespace-pre-wrap">
-                {inputDraft}
-                <span className="ml-px inline-block w-[2px] animate-pulse bg-current opacity-70">
-                  &nbsp;
-                </span>
-              </span>
-            ) : (
-              <span>iMessage</span>
-            )}
+            <span ref={placeholderRef}>iMessage</span>
+            <span
+              ref={draftRef}
+              className="truncate whitespace-pre-wrap"
+              hidden
+            />
           </div>
           <button
             type="button"

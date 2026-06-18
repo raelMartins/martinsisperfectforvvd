@@ -2,43 +2,49 @@
 
 import {
   createContext,
-  useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
   type ReactNode,
 } from "react";
-import { getTypableText, isIncomingSender } from "@/lib/messageText";
+import {
+  useMotionValueEvent,
+  useTransform,
+  type MotionValue,
+} from "framer-motion";
+import { useScrollTimeline } from "@/hooks/useScrollTimeline";
+import {
+  computeComposerDraft,
+  getActiveTypingIndex,
+  getMountedMessageIndices,
+} from "@/lib/scrollPhases";
 import { useMotion } from "@/context/MotionContext";
 import type { Message } from "@/types/message";
+import type { ScrollTimelineState } from "@/types/scrollTimeline";
+import type { ScrollTimelineEngine } from "@/hooks/useScrollTimeline";
 
-const TYPING_CHAR_MS = 30;
-const INCOMING_TYPING_MS = 800;
-const SEND_PAUSE_MS = 380;
-const MEDIA_SEND_PAUSE_MS = 420;
-const BOTTOM_THRESHOLD_PX = 120;
-
-type ConversationContextValue = {
-  messages: Message[];
-  revealedCount: number;
-  inputDraft: string;
-  isComposing: boolean;
-  showIncomingTyping: boolean;
+type ConversationContextValue = ScrollTimelineEngine & {
+  messages: readonly Message[];
+  composerDraft: MotionValue<string>;
+  isComposing: MotionValue<number>;
+  /** Indices of bubbles currently mounted in the thread (Phase B+). */
+  mountedIndices: number[];
+  /** Active incoming typing indicator index, or null. */
+  typingIndex: number | null;
 };
 
 const ConversationContext = createContext<ConversationContextValue | null>(
   null,
 );
 
-function delay(ms: number) {
-  return new Promise<void>((resolve) => {
-    window.setTimeout(resolve, ms);
-  });
+function indicesSignature(indices: number[]) {
+  return indices.join(",");
 }
 
 type ConversationProviderProps = {
-  messages: Message[];
+  messages: readonly Message[];
   children: ReactNode;
 };
 
@@ -46,156 +52,66 @@ export function ConversationProvider({
   messages,
   children,
 }: ConversationProviderProps) {
+  const engine = useScrollTimeline(messages);
   const { setScrollMetrics } = useMotion();
 
-  const [revealedCount, setRevealedCount] = useState(0);
-  const [inputDraft, setInputDraft] = useState("");
-  const [showIncomingTyping, setShowIncomingTyping] = useState(false);
+  const composerDraft = useTransform(engine.timelineState, (state) =>
+    computeComposerDraft(messages, state),
+  );
+  const isComposing = useTransform(composerDraft, (draft) => draft.length);
 
-  const revealedCountRef = useRef(0);
-  const isProcessingRef = useRef(false);
-  const awaitingUserScrollRef = useRef(false);
-  const userScrolledRef = useRef(false);
-  const hasStartedRef = useRef(false);
-  const typingAbortRef = useRef(0);
+  const [mountedIndices, setMountedIndices] = useState<number[]>([]);
+  const [typingIndex, setTypingIndex] = useState<number | null>(null);
 
-  useEffect(() => {
-    revealedCountRef.current = revealedCount;
-  }, [revealedCount]);
+  const mountedSigRef = useRef("");
+  const typingRef = useRef<number | null>(null);
 
-  const updateScrollMotion = useCallback(() => {
-    const doc = document.documentElement;
-    setScrollMetrics(window.scrollY, doc.scrollHeight, window.innerHeight);
-  }, [setScrollMetrics]);
-
-  const isNearBottom = useCallback(() => {
-    const doc = document.documentElement;
-    return (
-      window.scrollY + window.innerHeight >=
-      doc.scrollHeight - BOTTOM_THRESHOLD_PX
-    );
-  }, []);
-
-  const typeInComposer = useCallback(async (text: string, session: number) => {
-    setInputDraft("");
-
-    for (let i = 1; i <= text.length; i += 1) {
-      if (typingAbortRef.current !== session) return;
-      setInputDraft(text.slice(0, i));
-      await delay(TYPING_CHAR_MS);
-    }
-  }, []);
-
-  const revealMessageAt = useCallback((index: number) => {
-    const nextCount = index + 1;
-    revealedCountRef.current = nextCount;
-    setRevealedCount(nextCount);
-  }, []);
-
-  const processNextMessage = useCallback(async () => {
-    const index = revealedCountRef.current;
-    if (isProcessingRef.current || index >= messages.length) return;
-
-    isProcessingRef.current = true;
-    const session = typingAbortRef.current + 1;
-    typingAbortRef.current = session;
-
-    const nextMessage = messages[index];
-
-    try {
-      if (nextMessage.sender === "me") {
-        const typableText = getTypableText(nextMessage);
-
-        if (typableText) {
-          await typeInComposer(typableText, session);
-          if (typingAbortRef.current !== session) return;
-
-          await delay(SEND_PAUSE_MS);
-          if (typingAbortRef.current !== session) return;
-
-          setInputDraft("");
-          revealMessageAt(index);
-        } else {
-          await delay(MEDIA_SEND_PAUSE_MS);
-          if (typingAbortRef.current !== session) return;
-          revealMessageAt(index);
-        }
-      } else if (isIncomingSender(nextMessage.sender)) {
-        setShowIncomingTyping(true);
-        await delay(INCOMING_TYPING_MS);
-        if (typingAbortRef.current !== session) return;
-
-        setShowIncomingTyping(false);
-        revealMessageAt(index);
-      } else {
-        revealMessageAt(index);
+  const syncFromTimeline = useMemo(
+    () => (state: ScrollTimelineState) => {
+      const nextMounted = getMountedMessageIndices(messages, state);
+      const nextSig = indicesSignature(nextMounted);
+      if (nextSig !== mountedSigRef.current) {
+        mountedSigRef.current = nextSig;
+        setMountedIndices(nextMounted);
       }
 
-      awaitingUserScrollRef.current = true;
-      userScrolledRef.current = false;
-    } finally {
-      isProcessingRef.current = false;
-    }
-  }, [messages, revealMessageAt, typeInComposer]);
+      const nextTyping = getActiveTypingIndex(messages, state);
+      if (nextTyping !== typingRef.current) {
+        typingRef.current = nextTyping;
+        setTypingIndex(nextTyping);
+      }
+    },
+    [messages],
+  );
 
-  const tryAdvance = useCallback(() => {
-    if (
-      isProcessingRef.current ||
-      revealedCountRef.current >= messages.length
-    ) {
-      return;
-    }
+  useMotionValueEvent(engine.timelineState, "change", syncFromTimeline);
 
-    if (awaitingUserScrollRef.current && !userScrolledRef.current) {
-      return;
-    }
-
-    if (!isNearBottom()) {
-      return;
-    }
-
-    awaitingUserScrollRef.current = false;
-    void processNextMessage();
-  }, [isNearBottom, messages.length, processNextMessage]);
+  useMotionValueEvent(engine.scrollYProgress, "change", () => {
+    const doc = document.documentElement;
+    setScrollMetrics(
+      window.scrollY,
+      doc.scrollHeight,
+      window.innerHeight,
+    );
+  });
 
   useEffect(() => {
-    if (hasStartedRef.current) return;
-    hasStartedRef.current = true;
-    awaitingUserScrollRef.current = false;
-    void processNextMessage();
-  }, [processNextMessage]);
-
-  useEffect(() => {
-    updateScrollMotion();
-  }, [revealedCount, showIncomingTyping, inputDraft, updateScrollMotion]);
-
-  useEffect(() => {
-    const onScroll = () => {
-      updateScrollMotion();
-      tryAdvance();
-    };
-
-    const onWheel = () => {
-      userScrolledRef.current = true;
-      tryAdvance();
-    };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("wheel", onWheel, { passive: true });
-
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("wheel", onWheel);
-      typingAbortRef.current += 1;
-    };
-  }, [tryAdvance, updateScrollMotion]);
+    syncFromTimeline(engine.getTimelineStateAt(engine.scrollYProgress.get()));
+    const doc = document.documentElement;
+    setScrollMetrics(
+      window.scrollY,
+      doc.scrollHeight,
+      window.innerHeight,
+    );
+  }, [engine, messages.length, setScrollMetrics, syncFromTimeline]);
 
   const value: ConversationContextValue = {
+    ...engine,
     messages,
-    revealedCount,
-    inputDraft,
-    isComposing: inputDraft.length > 0,
-    showIncomingTyping,
+    composerDraft,
+    isComposing,
+    mountedIndices,
+    typingIndex,
   };
 
   return (

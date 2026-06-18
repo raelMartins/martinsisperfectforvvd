@@ -23,24 +23,30 @@ function IMessageShell({ activeConversation, messages }: IMessageLayoutProps) {
 
   return (
     <div
-      className="relative min-h-screen w-full transition-colors duration-300"
-      style={{ backgroundColor: colors.chatBg }}
+      className="relative w-full"
+      style={{
+        height: LAYOUT.scrubTrackHeight,
+        backgroundColor: colors.chatBg,
+      }}
       data-theme={theme}
     >
       <BackgroundCanvas />
 
-      <div
-        className="relative mx-auto w-full"
-        style={{ maxWidth: LAYOUT.columnMaxWidth }}
-      >
-        <ConversationProvider messages={messages}>
-          <ChatHeader
-            conversation={activeConversation}
-            unreadCount={messages.length}
-          />
-          <ChatThread />
-          <ChatFooter />
-        </ConversationProvider>
+      {/* Sticky camera — UI never leaves the viewport */}
+      <div className="sticky top-0 h-screen w-full overflow-hidden">
+        <div
+          className="relative mx-auto flex h-full w-full flex-col"
+          style={{ maxWidth: LAYOUT.columnMaxWidth }}
+        >
+          <ConversationProvider messages={messages}>
+            <ChatHeader
+              conversation={activeConversation}
+              unreadCount={messages.length}
+            />
+            <ChatThread />
+            <ChatFooter />
+          </ConversationProvider>
+        </div>
       </div>
 
       <VideoPlayerModal />

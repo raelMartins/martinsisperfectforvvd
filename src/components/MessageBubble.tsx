@@ -11,7 +11,8 @@ import { useTheme } from "@/context/ThemeContext";
 type MessageBubbleProps = {
   message: Message;
   showSenderName?: boolean;
-  emphasize?: boolean;
+  /** Framer layout id for scrollytelling push-up transitions. */
+  layoutId?: string;
 };
 
 function MessageText({ message, isMe }: { message: Message; isMe: boolean }) {
@@ -74,7 +75,7 @@ function MessageMedia({ message }: { message: Message }) {
 export default function MessageBubble({
   message,
   showSenderName = false,
-  emphasize = false,
+  layoutId,
 }: MessageBubbleProps) {
   const { colors } = useTheme();
   const isMe = message.sender === "me";
@@ -85,31 +86,17 @@ export default function MessageBubble({
     return null;
   }
 
-  return (
-    <motion.div
-      layout
-      initial={{
-        opacity: 0,
-        y: emphasize ? 20 : 14,
-        scale: emphasize ? 0.94 : 0.96,
-      }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{
-        type: "spring",
-        stiffness: emphasize ? 480 : 420,
-        damping: emphasize ? 26 : 28,
-        mass: 0.8,
-      }}
-      className={["flex w-full", isMe ? "justify-end" : "justify-start"].join(
-        " ",
-      )}
+  const rowClassName = ["flex w-full", isMe ? "justify-end" : "justify-start"].join(
+    " ",
+  );
+
+  const content = (
+    <div
+      className={[
+        "flex max-w-[min(100%,68%)] flex-col",
+        isMe ? "items-end" : "items-start",
+      ].join(" ")}
     >
-      <div
-        className={[
-          "flex max-w-[min(100%,68%)] flex-col",
-          isMe ? "items-end" : "items-start",
-        ].join(" ")}
-      >
         {showSenderName && !isMe ? (
           <span
             className="mb-2 px-4 text-lg font-medium sm:text-xl"
@@ -140,6 +127,16 @@ export default function MessageBubble({
           </div>
         ) : null}
       </div>
+  );
+
+  return (
+    <motion.div
+      layout="position"
+      layoutId={layoutId}
+      transition={{ type: "spring", stiffness: 420, damping: 32 }}
+      className={rowClassName}
+    >
+      {content}
     </motion.div>
   );
 }

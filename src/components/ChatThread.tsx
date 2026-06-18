@@ -1,67 +1,62 @@
 "use client";
 
-import { AnimatePresence } from "framer-motion";
-import { useRef } from "react";
+import { LayoutGroup } from "framer-motion";
 import MessageBubble from "@/components/MessageBubble";
 import TypingIndicator from "@/components/TypingIndicator";
-import { LAYOUT } from "@/constants/layout";
 import { useConversation } from "@/context/ConversationContext";
 import { useTheme } from "@/context/ThemeContext";
 
 export default function ChatThread() {
   const { colors } = useTheme();
-  const { messages, revealedCount, showIncomingTyping } = useConversation();
-  const bottomRef = useRef<HTMLDivElement>(null);
-
-  const visibleMessages = messages.slice(0, revealedCount);
+  const { messages, mountedIndices, typingIndex } = useConversation();
 
   return (
-    <main
-      className="relative z-10 w-full px-10 sm:px-16 lg:px-24"
-      style={{
-        backgroundColor: colors.chatBg,
-        paddingTop: LAYOUT.headerHeight,
-        paddingBottom: LAYOUT.footerHeight,
-      }}
+    <section
+      className="relative z-10 flex min-h-0 flex-1 flex-col justify-end overflow-hidden"
+      style={{ backgroundColor: colors.chatBg }}
     >
-      <div className="mx-auto w-full max-w-[1400px]">
-        <div className="mb-16 pt-10 text-center">
-          <p className="text-2xl font-normal" style={{ color: colors.muted }}>
-            iMessage
-          </p>
-          <p
-            className="mt-1 text-2xl font-normal"
-            style={{ color: colors.muted }}
-          >
-            Today
-          </p>
-        </div>
+      <div className="flex min-h-0 flex-1 flex-col justify-end px-10 sm:px-16 lg:px-24">
+        <div className="mx-auto flex w-full max-w-[1400px] flex-col justify-end">
+          <div className="mb-8 shrink-0 pt-4 text-center">
+            <p className="text-2xl font-normal" style={{ color: colors.muted }}>
+              iMessage
+            </p>
+            <p
+              className="mt-1 text-2xl font-normal"
+              style={{ color: colors.muted }}
+            >
+              Today
+            </p>
+          </div>
 
-        <div className="flex flex-col gap-5 pb-16">
-          <AnimatePresence initial={false}>
-            {visibleMessages.map((message, index) => {
-              const previous = visibleMessages[index - 1];
-              const showSenderName =
-                message.sender !== "me" && previous?.sender !== message.sender;
-              const isLatest = index === visibleMessages.length - 1;
+          <LayoutGroup>
+            <div className="flex flex-col justify-end gap-5 pb-4">
+              {mountedIndices.map((index, position) => {
+                const message = messages[index];
+                const prevIndex =
+                  position > 0 ? mountedIndices[position - 1] : undefined;
+                const showSenderName =
+                  message.sender !== "me" &&
+                  (prevIndex === undefined ||
+                    messages[prevIndex]?.sender !== message.sender);
 
-              return (
-                <MessageBubble
-                  key={message.id}
-                  message={message}
-                  showSenderName={showSenderName}
-                  emphasize={isLatest}
-                />
-              );
-            })}
-            {showIncomingTyping ? (
-              <TypingIndicator key="typing-indicator" />
-            ) : null}
-          </AnimatePresence>
+                return (
+                  <MessageBubble
+                    key={message.id}
+                    message={message}
+                    showSenderName={showSenderName}
+                    layoutId={message.id}
+                  />
+                );
+              })}
 
-          <div ref={bottomRef} className="h-px shrink-0" aria-hidden />
+              {typingIndex !== null ? (
+                <TypingIndicator key="incoming-typing" scrollDriven />
+              ) : null}
+            </div>
+          </LayoutGroup>
         </div>
       </div>
-    </main>
+    </section>
   );
 }

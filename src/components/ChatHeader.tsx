@@ -33,11 +33,8 @@ export default function ChatHeader({
 
   return (
     <header
-      className={`fixed top-0 left-1/2 z-50 w-full -translate-x-1/2 border-b backdrop-blur-md ${glassClass}`}
-      style={{
-        maxWidth: LAYOUT.columnMaxWidth,
-        height: LAYOUT.headerHeight,
-      }}
+      className={`relative z-20 w-full shrink-0 border-b backdrop-blur-md ${glassClass}`}
+      style={{ height: LAYOUT.headerHeight }}
     >
       <div className="flex h-full flex-col px-8 pt-4 pb-3">
         <div className="grid grid-cols-[1fr_auto_1fr] items-start">
