@@ -70,7 +70,7 @@ function MessageMedia({
   if (message.video) {
     return (
       <VideoAttachmentBubble
-        video={message.video}
+        message={message}
         layoutId={layoutId ? `${layoutId}-video` : undefined}
       />
     );
