@@ -14,7 +14,7 @@ export default function ImageAttachmentBubble({
   const isMulti = image.images.length > 1;
 
   return (
-    <div className="w-full min-w-0 max-w-[min(100%,260px)] sm:max-w-[340px] md:max-w-[420px] lg:min-w-[300px] lg:max-w-[520px]">
+    <div className="w-[min(100%,280px)] min-w-[200px] sm:w-full sm:max-w-[340px] md:max-w-[420px] lg:min-w-[300px] lg:max-w-[520px]">
       <div
         className={[
           "overflow-hidden rounded-[16px] sm:rounded-[20px] lg:rounded-[24px]",

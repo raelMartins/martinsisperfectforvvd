@@ -133,7 +133,12 @@ export default function MessageBubble({
         ) : null}
 
         {hasMedia ? (
-          <div className={hasText ? "mt-2" : ""}>
+          <div
+            className={[
+              hasText ? "mt-2" : "",
+              "w-[min(100%,280px)] min-w-[200px] sm:w-full sm:max-w-[340px] md:max-w-[420px] lg:max-w-[520px]",
+            ].join(" ")}
+          >
             <MessageMedia message={message} layoutId={layoutId} />
           </div>
         ) : null}

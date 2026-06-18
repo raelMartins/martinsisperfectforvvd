@@ -16,7 +16,7 @@ type VideoAttachmentBubbleProps = {
 };
 
 const ATTACHMENT_CLASS =
-  "w-full min-w-0 max-w-[min(100%,260px)] sm:max-w-[340px] md:max-w-[420px] lg:min-w-[300px] lg:max-w-[480px] xl:max-w-[520px]";
+  "w-[min(100%,280px)] min-w-[200px] sm:w-full sm:max-w-[340px] md:max-w-[420px] lg:min-w-[300px] lg:max-w-[480px] xl:max-w-[520px]";
 
 const LAYOUT_TRANSITION = {
   type: "spring" as const,
@@ -77,11 +77,12 @@ function LoomInlineEmbed({
       transition={LAYOUT_TRANSITION}
       className={`relative overflow-hidden rounded-[16px] bg-[#0B0B0C] sm:rounded-[20px] lg:rounded-[24px] ${ATTACHMENT_CLASS}`}
     >
-      <div className="relative aspect-video w-full">
+      <div className="relative aspect-video w-full min-h-[120px] sm:min-h-0">
         <iframe
           src={src}
           title={title ?? "Loom video"}
           className="pointer-events-none absolute inset-0 h-full w-full border-0"
+          loading="lazy"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           allowFullScreen
           tabIndex={-1}

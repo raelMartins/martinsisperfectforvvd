@@ -26,9 +26,16 @@ export default function ChatFooter() {
   );
 
   const syncDraft = useCallback((draft: string) => {
+    const isEmpty = draft.length === 0;
+
     if (draftRef.current) draftRef.current.textContent = draft;
-    if (placeholderRef.current) placeholderRef.current.hidden = draft.length > 0;
-    if (viewportRef.current) viewportRef.current.hidden = draft.length === 0;
+    if (placeholderRef.current) {
+      placeholderRef.current.hidden = !isEmpty;
+    }
+    if (viewportRef.current) {
+      viewportRef.current.hidden = isEmpty;
+    }
+
     scrollDraftToEnd(viewportRef.current);
   }, []);
 
@@ -64,22 +71,22 @@ export default function ChatFooter() {
         >
           <div
             ref={textColorRef}
-            className="relative min-h-0 min-w-0 flex-1 text-sm leading-none font-normal sm:text-base lg:text-xl"
+            className="flex h-full min-w-0 flex-1 items-center text-sm font-normal sm:text-base lg:text-xl"
             style={{ color: colors.muted }}
             aria-live="polite"
             aria-label="Message input"
           >
-            <span ref={placeholderRef} className="block truncate">
+            <span ref={placeholderRef} className="min-w-0 truncate">
               iMessage
             </span>
             <div
               ref={viewportRef}
               hidden
-              className="absolute inset-0 overflow-x-auto overflow-y-hidden [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+              className="h-full min-w-0 flex-1 overflow-x-auto overflow-y-hidden [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
             >
               <span
                 ref={draftRef}
-                className="inline-block whitespace-nowrap"
+                className="inline-flex h-full items-center whitespace-nowrap"
               />
             </div>
           </div>
