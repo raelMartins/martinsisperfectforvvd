@@ -5,6 +5,7 @@ import ChatHeader from "@/components/ChatHeader";
 import ChatSoundEffects from "@/components/ChatSoundEffects";
 import ChatThread from "@/components/ChatThread";
 import PromptGalleryModal from "@/components/PromptGalleryModal";
+import SchedulingModal from "@/components/SchedulingModal";
 import VideoPlayerModal from "@/components/VideoPlayerModal";
 import { LAYOUT } from "@/constants/layout";
 import { ConversationProvider } from "@/context/ConversationContext";
@@ -50,6 +51,7 @@ function IMessageShell({ activeConversation, messages }: IMessageLayoutProps) {
               <ChatThread />
               <ChatFooter />
               <VideoPlayerModal />
+              <SchedulingModal />
             </AutoScrollProvider>
           </ConversationProvider>
         </div>

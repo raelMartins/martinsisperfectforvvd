@@ -17,6 +17,9 @@ type ModalContextValue = {
   isPromptGalleryOpen: boolean;
   openPromptGallery: () => void;
   closePromptGallery: () => void;
+  isSchedulingOpen: boolean;
+  openScheduling: () => void;
+  closeScheduling: () => void;
 };
 
 const ModalContext = createContext<ModalContextValue | null>(null);
@@ -24,6 +27,7 @@ const ModalContext = createContext<ModalContextValue | null>(null);
 export function ModalProvider({ children }: { children: ReactNode }) {
   const [videoModal, setVideoModal] = useState<VideoModalPayload | null>(null);
   const [isPromptGalleryOpen, setIsPromptGalleryOpen] = useState(false);
+  const [isSchedulingOpen, setIsSchedulingOpen] = useState(false);
 
   const openVideoModal = useCallback((payload: VideoModalPayload) => {
     setVideoModal(payload);
@@ -41,6 +45,14 @@ export function ModalProvider({ children }: { children: ReactNode }) {
     setIsPromptGalleryOpen(false);
   }, []);
 
+  const openScheduling = useCallback(() => {
+    setIsSchedulingOpen(true);
+  }, []);
+
+  const closeScheduling = useCallback(() => {
+    setIsSchedulingOpen(false);
+  }, []);
+
   const value = useMemo(
     () => ({
       videoModal,
@@ -49,6 +61,9 @@ export function ModalProvider({ children }: { children: ReactNode }) {
       isPromptGalleryOpen,
       openPromptGallery,
       closePromptGallery,
+      isSchedulingOpen,
+      openScheduling,
+      closeScheduling,
     }),
     [
       videoModal,
@@ -57,6 +72,9 @@ export function ModalProvider({ children }: { children: ReactNode }) {
       isPromptGalleryOpen,
       openPromptGallery,
       closePromptGallery,
+      isSchedulingOpen,
+      openScheduling,
+      closeScheduling,
     ],
   );
 

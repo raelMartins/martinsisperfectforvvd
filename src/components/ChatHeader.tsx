@@ -3,6 +3,7 @@
 import type { Conversation } from "@/types/message";
 import ThemeToggle from "@/components/ThemeToggle";
 import { useTheme } from "@/context/ThemeContext";
+import { useModal } from "@/context/ModalContext";
 import { LAYOUT } from "@/constants/layout";
 
 type ChatHeaderProps = {
@@ -25,6 +26,7 @@ export default function ChatHeader({
   unreadCount = 33,
 }: ChatHeaderProps) {
   const { colors } = useTheme();
+  const { openScheduling } = useModal();
   const initials = getAvatarInitials(conversation.title);
 
   return (
@@ -101,9 +103,10 @@ export default function ChatHeader({
           <div className="flex items-start justify-end gap-1 pt-0.5 sm:gap-1.5">
             <button
               type="button"
-              aria-label="Video call"
+              aria-label="Book a meeting"
               className="theme-fade transition-opacity hover:opacity-80"
               style={{ color: colors.accent }}
+              onClick={openScheduling}
             >
               <svg
                 className="h-6 w-6 sm:h-7 sm:w-7 lg:h-[30px] lg:w-[30px]"
