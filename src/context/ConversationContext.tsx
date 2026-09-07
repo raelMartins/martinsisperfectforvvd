@@ -20,7 +20,6 @@ import {
   getActiveTypingIndex,
   getMountedMessageIndices,
 } from "@/lib/scrollPhases";
-import { useMotion } from "@/context/MotionContext";
 import type { Message } from "@/types/message";
 import type { ScrollTimelineState } from "@/types/scrollTimeline";
 import type { ScrollTimelineEngine } from "@/hooks/useScrollTimeline";
@@ -53,7 +52,6 @@ export function ConversationProvider({
   children,
 }: ConversationProviderProps) {
   const engine = useScrollTimeline(messages);
-  const { setScrollMetrics } = useMotion();
 
   const composerDraft = useTransform(engine.timelineState, (state) =>
     computeComposerDraft(messages, state),
@@ -86,24 +84,9 @@ export function ConversationProvider({
 
   useMotionValueEvent(engine.timelineState, "change", syncFromTimeline);
 
-  useMotionValueEvent(engine.scrollYProgress, "change", () => {
-    const doc = document.documentElement;
-    setScrollMetrics(
-      window.scrollY,
-      doc.scrollHeight,
-      window.innerHeight,
-    );
-  });
-
   useEffect(() => {
     syncFromTimeline(engine.getTimelineStateAt(engine.scrollYProgress.get()));
-    const doc = document.documentElement;
-    setScrollMetrics(
-      window.scrollY,
-      doc.scrollHeight,
-      window.innerHeight,
-    );
-  }, [engine, messages.length, setScrollMetrics, syncFromTimeline]);
+  }, [engine, messages.length, syncFromTimeline]);
 
   const value: ConversationContextValue = {
     ...engine,

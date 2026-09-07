@@ -1,6 +1,5 @@
 "use client";
 
-import BackgroundCanvas from "@/components/BackgroundCanvas";
 import ChatFooter from "@/components/ChatFooter";
 import ChatHeader from "@/components/ChatHeader";
 import ChatThread from "@/components/ChatThread";
@@ -10,7 +9,6 @@ import { LAYOUT } from "@/constants/layout";
 import { ConversationProvider } from "@/context/ConversationContext";
 import { AutoScrollProvider } from "@/context/AutoScrollContext";
 import { ModalProvider } from "@/context/ModalContext";
-import { MotionProvider } from "@/context/MotionContext";
 import { ThemeProvider, useTheme } from "@/context/ThemeContext";
 import type { Conversation, Message } from "@/types/message";
 
@@ -31,11 +29,7 @@ function IMessageShell({ activeConversation, messages }: IMessageLayoutProps) {
       }}
       data-theme={theme}
     >
-      <BackgroundCanvas />
-
       {/* Sticky camera — UI never leaves the viewport */}
-      {/* This background is what the translucent header/footer composite
-          against, so it has to follow the theme. */}
       <div
         className="theme-fade sticky top-0 h-[100dvh] w-full overflow-hidden bg-black"
         style={{ backgroundColor: colors.appBg }}
@@ -66,11 +60,9 @@ function IMessageShell({ activeConversation, messages }: IMessageLayoutProps) {
 export default function IMessageLayout(props: IMessageLayoutProps) {
   return (
     <ThemeProvider>
-      <MotionProvider>
-        <ModalProvider>
-          <IMessageShell {...props} />
-        </ModalProvider>
-      </MotionProvider>
+      <ModalProvider>
+        <IMessageShell {...props} />
+      </ModalProvider>
     </ThemeProvider>
   );
 }
