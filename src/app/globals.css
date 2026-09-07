@@ -5,18 +5,213 @@
     "Helvetica Neue", Arial, sans-serif;
 }
 
+/*
+ * The palette is registered as `<color>` so a theme swap interpolates.
+ * Unregistered custom properties are treated as raw tokens and would snap
+ * to the new value instead of animating.
+ */
+@property --app-bg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #000000;
+}
+@property --chat-bg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #000000;
+}
+@property --header-bg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgba(0, 0, 0, 0.6);
+}
+@property --footer-bg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgba(0, 0, 0, 0.6);
+}
+@property --separator {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgba(255, 255, 255, 0.06);
+}
+@property --separator-soft {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgba(255, 255, 255, 0.06);
+}
+@property --text {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #f5f5f7;
+}
+@property --muted {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #8e8e93;
+}
+@property --accent {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #0a84ff;
+}
+@property --me-bubble {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #0a84ff;
+}
+@property --me-text {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #ffffff;
+}
+@property --their-bubble {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #3a3a3c;
+}
+@property --their-text {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #f5f5f7;
+}
+@property --link {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #64d2ff;
+}
+@property --link-underline {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgba(100, 210, 255, 0.4);
+}
+@property --composer-bg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #3a3a3c;
+}
+@property --composer-border {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgba(255, 255, 255, 0);
+}
+@property --control-bg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #3a3a3c;
+}
+@property --avatar-bg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #3a3a3c;
+}
+@property --typing-dot {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #8e8e93;
+}
+
+:root {
+  color-scheme: dark;
+  --theme-swap: 420ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  --app-bg: #000000;
+  --chat-bg: #000000;
+  --header-bg: rgba(0, 0, 0, 0.6);
+  --footer-bg: rgba(0, 0, 0, 0.6);
+  --separator: rgba(255, 255, 255, 0.06);
+  --separator-soft: rgba(255, 255, 255, 0.06);
+  --text: #f5f5f7;
+  --muted: #8e8e93;
+  --accent: #0a84ff;
+  --me-bubble: #0a84ff;
+  --me-text: #ffffff;
+  --their-bubble: #3a3a3c;
+  --their-text: #f5f5f7;
+  --link: #64d2ff;
+  --link-underline: rgba(100, 210, 255, 0.4);
+  --composer-bg: #3a3a3c;
+  --composer-border: rgba(255, 255, 255, 0);
+  --control-bg: #3a3a3c;
+  --avatar-bg: #3a3a3c;
+  --typing-dot: #8e8e93;
+}
+
+/* Sampled from iOS Messages in light appearance: white thread, #F6F6F7
+   nav bar over a #D3D3D3 hairline, #E9E9EB received bubbles. */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --app-bg: #ffffff;
+  --chat-bg: #ffffff;
+  --header-bg: rgba(246, 246, 247, 0.86);
+  --footer-bg: rgba(255, 255, 255, 0.86);
+  --separator: rgba(0, 0, 0, 0.16);
+  --separator-soft: rgba(0, 0, 0, 0.05);
+  --text: #1d1d1f;
+  --muted: #8e8e93;
+  --accent: #007aff;
+  --me-bubble: #007aff;
+  --me-text: #ffffff;
+  --their-bubble: #e9e9eb;
+  --their-text: #1d1d1f;
+  --link: #007aff;
+  --link-underline: rgba(0, 122, 255, 0.4);
+  --composer-bg: #ffffff;
+  --composer-border: rgba(0, 0, 0, 0.14);
+  --control-bg: #e4e4e6;
+  --avatar-bg: #a0a4ad;
+  --typing-dot: #8e8e93;
+}
+
+/* Declared on the same element the tokens are swapped on, so descendants
+   inherit an already-interpolated value. */
+:root {
+  transition:
+    --app-bg var(--theme-swap),
+    --chat-bg var(--theme-swap),
+    --header-bg var(--theme-swap),
+    --footer-bg var(--theme-swap),
+    --separator var(--theme-swap),
+    --separator-soft var(--theme-swap),
+    --text var(--theme-swap),
+    --muted var(--theme-swap),
+    --accent var(--theme-swap),
+    --me-bubble var(--theme-swap),
+    --me-text var(--theme-swap),
+    --their-bubble var(--theme-swap),
+    --their-text var(--theme-swap),
+    --link var(--theme-swap),
+    --link-underline var(--theme-swap),
+    --composer-bg var(--theme-swap),
+    --composer-border var(--theme-swap),
+    --control-bg var(--theme-swap),
+    --avatar-bg var(--theme-swap),
+    --typing-dot var(--theme-swap),
+    background-color var(--theme-swap);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    transition-duration: 0s;
+  }
+}
+
 html {
   scroll-behavior: auto;
-  background: #000000;
+  background: var(--app-bg);
 }
 
 body {
   margin: 0;
   font-family: var(--font-sans);
-  background: #000000;
-  color: #f5f5f7;
+  background: var(--app-bg);
+  color: var(--text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition:
+    background-color var(--theme-swap),
+    color var(--theme-swap);
 }
 
 * {

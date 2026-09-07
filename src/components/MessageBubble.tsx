@@ -38,7 +38,7 @@ function MessageText({ message, isMe }: { message: Message; isMe: boolean }) {
             color: isMe ? colors.meText : colors.link,
             textDecorationColor: isMe
               ? "rgba(255,255,255,0.5)"
-              : `${colors.link}66`,
+              : colors.linkUnderline,
           }}
           onClick={handleClick}
         >

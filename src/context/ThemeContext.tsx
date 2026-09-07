@@ -4,6 +4,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
   type ReactNode,
@@ -11,60 +12,35 @@ import {
 
 export type Theme = "dark" | "light";
 
-export type ThemeColors = {
-  appBg: string;
-  windowBg: string;
-  sidebarBg: string;
-  chatBg: string;
-  headerBg: string;
-  border: string;
-  text: string;
-  muted: string;
-  meBubble: string;
-  meText: string;
-  theirBubble: string;
-  theirText: string;
-  link: string;
-  activeRow: string;
-  typingDot: string;
-};
+/**
+ * Every token points at a registered custom property declared in globals.css.
+ * Components read these instead of literal hex so a theme swap is animated by
+ * CSS rather than re-rendered as an instant color change.
+ */
+export const COLORS = {
+  appBg: "var(--app-bg)",
+  chatBg: "var(--chat-bg)",
+  headerBg: "var(--header-bg)",
+  footerBg: "var(--footer-bg)",
+  separator: "var(--separator)",
+  separatorSoft: "var(--separator-soft)",
+  text: "var(--text)",
+  muted: "var(--muted)",
+  accent: "var(--accent)",
+  meBubble: "var(--me-bubble)",
+  meText: "var(--me-text)",
+  theirBubble: "var(--their-bubble)",
+  theirText: "var(--their-text)",
+  link: "var(--link)",
+  linkUnderline: "var(--link-underline)",
+  composerBg: "var(--composer-bg)",
+  composerBorder: "var(--composer-border)",
+  controlBg: "var(--control-bg)",
+  avatarBg: "var(--avatar-bg)",
+  typingDot: "var(--typing-dot)",
+} as const;
 
-const THEMES: Record<Theme, ThemeColors> = {
-  dark: {
-    appBg: "#000000",
-    windowBg: "#000000",
-    sidebarBg: "#141416",
-    chatBg: "#000000",
-    headerBg: "rgba(0,0,0,0.6)",
-    border: "rgba(255,255,255,0.08)",
-    text: "#F5F5F7",
-    muted: "#8E8E93",
-    meBubble: "#0A84FF",
-    meText: "#FFFFFF",
-    theirBubble: "#3A3A3C",
-    theirText: "#F5F5F7",
-    link: "#64D2FF",
-    activeRow: "#0A84FF",
-    typingDot: "#8E8E93",
-  },
-  light: {
-    appBg: "#F2F2F7",
-    windowBg: "#FFFFFF",
-    sidebarBg: "#F6F6F6",
-    chatBg: "#F2F2F7",
-    headerBg: "#FBFBFB",
-    border: "rgba(0,0,0,0.1)",
-    text: "#1D1D1F",
-    muted: "#8E8E93",
-    meBubble: "#007AFF",
-    meText: "#FFFFFF",
-    theirBubble: "#E5E5EA",
-    theirText: "#1D1D1F",
-    link: "#007AFF",
-    activeRow: "#007AFF",
-    typingDot: "#8E8E93",
-  },
-};
+export type ThemeColors = typeof COLORS;
 
 type ThemeContextValue = {
   theme: Theme;
@@ -81,10 +57,16 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     setTheme((current) => (current === "dark" ? "light" : "dark"));
   }, []);
 
+  // The palette lives on the document element so `color-scheme`, the page
+  // background and the scrollbar follow the theme too.
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+  }, [theme]);
+
   const value = useMemo(
     () => ({
       theme,
-      colors: THEMES[theme],
+      colors: COLORS,
       toggleTheme,
     }),
     [theme, toggleTheme],

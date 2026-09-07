@@ -12,7 +12,7 @@ export default function ChatThread() {
 
   return (
     <section
-      className="relative z-10 flex min-h-0 flex-1 flex-col justify-end overflow-hidden bg-black"
+      className="relative z-10 flex min-h-0 flex-1 flex-col justify-end overflow-hidden"
       style={{ backgroundColor: colors.chatBg }}
     >
       <div className="flex min-h-0 flex-1 flex-col justify-end px-4 sm:px-10 md:px-16 lg:px-24">

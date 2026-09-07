@@ -24,16 +24,16 @@ export default function ChatHeader({
   conversation,
   unreadCount = 33,
 }: ChatHeaderProps) {
-  const { colors, theme } = useTheme();
+  const { colors } = useTheme();
   const initials = getAvatarInitials(conversation.title);
-  const glassClass =
-    theme === "dark"
-      ? "border-white/[0.06] bg-black/60"
-      : "border-black/[0.08] bg-white/70";
 
   return (
     <header
-      className={`relative z-20 w-full shrink-0 border-b backdrop-blur-md ${glassClass} ${LAYOUT.headerHeightClass}`}
+      className={`relative z-20 w-full shrink-0 border-b backdrop-blur-md ${LAYOUT.headerHeightClass}`}
+      style={{
+        backgroundColor: colors.headerBg,
+        borderBottomColor: colors.separator,
+      }}
     >
       <div className="flex h-full flex-col px-4 pt-2 pb-2 sm:px-6 sm:pt-3 md:px-8 md:pt-4 md:pb-3">
         <div className="grid grid-cols-[1fr_auto_1fr] items-start">
@@ -41,7 +41,8 @@ export default function ChatHeader({
             <button
               type="button"
               aria-label="Back"
-              className="flex items-center text-[#0A84FF] transition-opacity hover:opacity-80"
+              className="flex items-center transition-opacity hover:opacity-80"
+              style={{ color: colors.accent }}
             >
               <svg
                 className="h-5 w-5 sm:h-6 sm:w-6 lg:h-7 lg:w-7"
@@ -55,7 +56,10 @@ export default function ChatHeader({
               >
                 <path d="M15 18l-6-6 6-6" />
               </svg>
-              <span className="flex h-6 min-w-6 items-center justify-center rounded-full bg-[#0A84FF] px-1.5 text-xs font-semibold text-white sm:h-7 sm:min-w-7 sm:px-2 sm:text-sm lg:h-8 lg:min-w-8 lg:text-base">
+              <span
+                className="flex h-6 min-w-6 items-center justify-center rounded-full px-1.5 text-xs font-semibold text-white sm:h-7 sm:min-w-7 sm:px-2 sm:text-sm lg:h-8 lg:min-w-8 lg:text-base"
+                style={{ backgroundColor: colors.accent }}
+              >
                 {unreadCount}
               </span>
             </button>
@@ -64,7 +68,7 @@ export default function ChatHeader({
           <div className="flex flex-col items-center">
             <div
               className="flex h-11 w-11 items-center justify-center rounded-full text-sm font-medium text-white/90 sm:h-14 sm:w-14 sm:text-lg md:h-16 md:w-16 md:text-xl lg:h-[72px] lg:w-[72px] lg:text-2xl"
-              style={{ backgroundColor: colors.theirBubble }}
+              style={{ backgroundColor: colors.avatarBg }}
             >
               {initials}
             </div>
@@ -98,7 +102,8 @@ export default function ChatHeader({
             <button
               type="button"
               aria-label="Video call"
-              className="text-[#0A84FF] transition-opacity hover:opacity-80"
+              className="transition-opacity hover:opacity-80"
+              style={{ color: colors.accent }}
             >
               <svg
                 className="h-6 w-6 sm:h-7 sm:w-7 lg:h-[30px] lg:w-[30px]"

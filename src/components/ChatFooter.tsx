@@ -13,7 +13,7 @@ function scrollDraftToEnd(viewport: HTMLDivElement | null) {
 }
 
 export default function ChatFooter() {
-  const { colors, theme } = useTheme();
+  const { colors } = useTheme();
   const { composerDraft, isComposing } = useConversation();
 
   const draftRef = useRef<HTMLSpanElement>(null);
@@ -53,21 +53,23 @@ export default function ChatFooter() {
     }
   }, [colors.muted, colors.text, composerDraft, isComposing, syncDraft]);
 
-  const glassClass =
-    theme === "dark"
-      ? "border-white/[0.06] bg-black/60"
-      : "border-black/[0.08] bg-white/70";
-
   return (
     <footer
-      className={`relative z-20 w-full shrink-0 border-t backdrop-blur-md ${glassClass} ${LAYOUT.footerHeightClass}`}
+      className={`relative z-20 w-full shrink-0 border-t backdrop-blur-md ${LAYOUT.footerHeightClass}`}
+      style={{
+        backgroundColor: colors.footerBg,
+        borderTopColor: colors.separatorSoft,
+      }}
     >
       <div className="flex h-full items-center gap-2.5 px-3 py-1.5 sm:gap-4 sm:px-5 md:gap-5 md:px-8 md:py-2">
         <PlayPauseButton />
 
         <div
-          className="flex h-9 min-w-0 flex-1 items-center rounded-full px-3 sm:h-11 sm:px-5 md:h-12 md:px-6 lg:h-[64px] lg:px-7"
-          style={{ backgroundColor: colors.theirBubble }}
+          className="flex h-9 min-w-0 flex-1 items-center rounded-full border px-3 sm:h-11 sm:px-5 md:h-12 md:px-6 lg:h-[64px] lg:px-7"
+          style={{
+            backgroundColor: colors.composerBg,
+            borderColor: colors.composerBorder,
+          }}
         >
           <div
             ref={textColorRef}
