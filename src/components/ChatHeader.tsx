@@ -63,6 +63,7 @@ export default function ChatHeader({
                 {unreadCount}
               </span>
             </button>
+            <ThemeToggle iconSize={20} className="h-8 w-8 sm:h-9 sm:w-9 lg:h-10 lg:w-10" />
           </div>
 
           <div className="flex flex-col items-center">
@@ -98,7 +99,6 @@ export default function ChatHeader({
           </div>
 
           <div className="flex items-start justify-end gap-1 pt-0.5 sm:gap-1.5">
-            <ThemeToggle iconSize={20} className="h-8 w-8 sm:h-9 sm:w-9 lg:h-10 lg:w-10" />
             <button
               type="button"
               aria-label="Video call"
