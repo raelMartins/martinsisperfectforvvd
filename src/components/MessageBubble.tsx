@@ -120,7 +120,7 @@ export default function MessageBubble({
         {hasText ? (
           <div
             className={[
-              "rounded-[18px] px-4 py-2.5 sm:rounded-[22px] sm:px-5 sm:py-3 md:rounded-[26px] md:px-6 md:py-3.5 lg:rounded-[28px] lg:px-8 lg:py-5",
+              "theme-fade rounded-[18px] px-4 py-2.5 sm:rounded-[22px] sm:px-5 sm:py-3 md:rounded-[26px] md:px-6 md:py-3.5 lg:rounded-[28px] lg:px-8 lg:py-5",
               isMe ? "rounded-br-lg" : "rounded-bl-lg",
             ].join(" ")}
             style={{

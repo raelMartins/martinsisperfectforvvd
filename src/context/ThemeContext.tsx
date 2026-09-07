@@ -17,9 +17,14 @@ export type ThemeColors = {
   sidebarBg: string;
   chatBg: string;
   headerBg: string;
+  footerBg: string;
   border: string;
+  /** Hairline above the composer — barely there in iOS light appearance. */
+  borderSoft: string;
   text: string;
   muted: string;
+  /** System blue for the back chevron, unread badge and video button. */
+  accent: string;
   meBubble: string;
   meText: string;
   theirBubble: string;
@@ -27,6 +32,11 @@ export type ThemeColors = {
   link: string;
   activeRow: string;
   typingDot: string;
+  avatarBg: string;
+  composerBg: string;
+  composerBorder: string;
+  /** Play/pause button and its tooltip. */
+  controlBg: string;
 };
 
 const THEMES: Record<Theme, ThemeColors> = {
@@ -36,9 +46,12 @@ const THEMES: Record<Theme, ThemeColors> = {
     sidebarBg: "#141416",
     chatBg: "#000000",
     headerBg: "rgba(0,0,0,0.6)",
-    border: "rgba(255,255,255,0.08)",
+    footerBg: "rgba(0,0,0,0.6)",
+    border: "rgba(255,255,255,0.06)",
+    borderSoft: "rgba(255,255,255,0.06)",
     text: "#F5F5F7",
     muted: "#8E8E93",
+    accent: "#0A84FF",
     meBubble: "#0A84FF",
     meText: "#FFFFFF",
     theirBubble: "#3A3A3C",
@@ -46,23 +59,36 @@ const THEMES: Record<Theme, ThemeColors> = {
     link: "#64D2FF",
     activeRow: "#0A84FF",
     typingDot: "#8E8E93",
+    avatarBg: "#3A3A3C",
+    composerBg: "#3A3A3C",
+    composerBorder: "transparent",
+    controlBg: "#3A3A3C",
   },
+  // Sampled from iOS Messages in light appearance: white thread, #F6F6F7 nav
+  // bar over a #D3D3D3 hairline, #E9E9EB received bubbles, white composer.
   light: {
-    appBg: "#F2F2F7",
+    appBg: "#FFFFFF",
     windowBg: "#FFFFFF",
     sidebarBg: "#F6F6F6",
-    chatBg: "#F2F2F7",
-    headerBg: "#FBFBFB",
-    border: "rgba(0,0,0,0.1)",
+    chatBg: "#FFFFFF",
+    headerBg: "rgba(246,246,247,0.86)",
+    footerBg: "rgba(255,255,255,0.86)",
+    border: "rgba(0,0,0,0.16)",
+    borderSoft: "rgba(0,0,0,0.05)",
     text: "#1D1D1F",
     muted: "#8E8E93",
+    accent: "#007AFF",
     meBubble: "#007AFF",
     meText: "#FFFFFF",
-    theirBubble: "#E5E5EA",
+    theirBubble: "#E9E9EB",
     theirText: "#1D1D1F",
     link: "#007AFF",
     activeRow: "#007AFF",
     typingDot: "#8E8E93",
+    avatarBg: "#A0A4AD",
+    composerBg: "#FFFFFF",
+    composerBorder: "rgba(0,0,0,0.14)",
+    controlBg: "#E4E4E6",
   },
 };
 

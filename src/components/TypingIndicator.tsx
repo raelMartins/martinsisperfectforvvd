@@ -16,7 +16,7 @@ export default function TypingIndicator({
 
   const bubble = (
     <div
-      className="flex items-center gap-1.5 rounded-[18px] rounded-bl-lg px-4 py-3 sm:gap-2 sm:rounded-[22px] sm:px-5 sm:py-4 md:rounded-[26px] md:px-6 md:py-4 lg:rounded-[28px] lg:px-7 lg:py-5"
+      className="theme-fade flex items-center gap-1.5 rounded-[18px] rounded-bl-lg px-4 py-3 sm:gap-2 sm:rounded-[22px] sm:px-5 sm:py-4 md:rounded-[26px] md:px-6 md:py-4 lg:rounded-[28px] lg:px-7 lg:py-5"
       style={{ backgroundColor: colors.theirBubble }}
     >
       {DOT_DELAYS.map((delay) => (
