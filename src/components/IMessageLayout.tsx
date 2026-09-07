@@ -24,21 +24,17 @@ function IMessageShell({ activeConversation, messages }: IMessageLayoutProps) {
 
   return (
     <div
-      className="relative w-full"
+      className="relative w-full bg-black"
       style={{
         height: LAYOUT.scrubTrackHeight,
-        backgroundColor: colors.appBg,
+        backgroundColor: colors.chatBg,
       }}
       data-theme={theme}
     >
       <BackgroundCanvas />
 
-      {/* Sticky camera — UI never leaves the viewport. Its background is what
-          the translucent header/footer composite against. */}
-      <div
-        className="sticky top-0 h-[100dvh] w-full overflow-hidden"
-        style={{ backgroundColor: colors.appBg }}
-      >
+      {/* Sticky camera — UI never leaves the viewport */}
+      <div className="sticky top-0 h-[100dvh] w-full overflow-hidden bg-black">
         <div
           className="relative mx-auto flex h-full w-full flex-col"
           style={{ maxWidth: LAYOUT.columnMaxWidth }}

@@ -16,7 +16,7 @@ export default function PlayPauseButton() {
         aria-label={isPlaying ? "Pause auto-scroll" : "Play auto-scroll"}
         aria-pressed={isPlaying}
         className="flex h-10 w-10 items-center justify-center rounded-full transition-opacity hover:opacity-80 sm:h-11 sm:w-11 md:h-12 md:w-12 lg:h-[60px] lg:w-[60px]"
-        style={{ backgroundColor: colors.controlBg }}
+        style={{ backgroundColor: colors.theirBubble }}
       >
         {isPlaying ? (
           <Pause
@@ -39,7 +39,7 @@ export default function PlayPauseButton() {
         role="tooltip"
         className="pointer-events-none absolute bottom-[calc(100%+8px)] left-1/2 z-30 hidden -translate-x-1/2 whitespace-nowrap rounded-lg px-3 py-1.5 text-xs font-medium opacity-0 shadow-lg transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100 sm:block sm:text-sm"
         style={{
-          backgroundColor: colors.controlBg,
+          backgroundColor: colors.theirBubble,
           color: colors.text,
         }}
       >
