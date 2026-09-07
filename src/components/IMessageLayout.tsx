@@ -25,11 +25,8 @@ function IMessageShell({ activeConversation, messages }: IMessageLayoutProps) {
 
   return (
     <div
-      className="theme-fade relative w-full bg-black"
-      style={{
-        height: LAYOUT.scrubTrackHeight,
-        backgroundColor: colors.appBg,
-      }}
+      className={`theme-fade relative w-full bg-black ${LAYOUT.scrubTrackClass}`}
+      style={{ backgroundColor: colors.appBg }}
       data-theme={theme}
     >
       {/* Sticky camera — UI never leaves the viewport */}
