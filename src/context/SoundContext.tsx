@@ -13,6 +13,8 @@ import {
 
 type ChatSound = "typing" | "sent" | "received";
 
+type AudioGraph = { context: AudioContext; bus: AudioNode };
+
 type SoundContextValue = {
   isMuted: boolean;
   toggleMuted: () => void;
@@ -37,13 +39,14 @@ function getMutedSetting() {
 }
 
 function addTone(
-  context: AudioContext,
+  bus: AudioNode,
   start: number,
   frequency: number,
   duration: number,
   volume: number,
   endFrequency = frequency,
 ) {
+  const context = bus.context;
   const oscillator = context.createOscillator();
   const gain = context.createGain();
 
@@ -56,35 +59,37 @@ function addTone(
   gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
 
   oscillator.connect(gain);
-  gain.connect(context.destination);
+  gain.connect(bus);
   oscillator.start(start);
   oscillator.stop(start + duration + 0.01);
 }
 
 function synthesizeSound(
-  context: AudioContext,
+  bus: AudioNode,
   sound: ChatSound,
   typingVariation: number,
 ) {
+  const context = bus.context;
   const now = context.currentTime + 0.005;
 
   if (sound === "typing") {
-    // A very short, quiet key-click with slight alternating pitch.
-    addTone(context, now, 920 + typingVariation * 55, 0.035, 0.018, 690);
+    // A very short key-click with slight alternating pitch. Kept well under
+    // the alerts because it fires on every keystroke.
+    addTone(bus, now, 920 + typingVariation * 55, 0.035, 0.11, 690);
     return;
   }
 
   if (sound === "sent") {
     // A compact rising confirmation inspired by a message-send swoosh.
-    addTone(context, now, 430, 0.14, 0.045, 980);
-    addTone(context, now + 0.035, 690, 0.12, 0.025, 1320);
+    addTone(bus, now, 430, 0.14, 0.3, 980);
+    addTone(bus, now + 0.035, 690, 0.12, 0.17, 1320);
     return;
   }
 
   // A clean, neutral three-note incoming alert.
-  addTone(context, now, 740, 0.1, 0.04);
-  addTone(context, now + 0.085, 930, 0.1, 0.045);
-  addTone(context, now + 0.17, 660, 0.14, 0.04);
+  addTone(bus, now, 740, 0.1, 0.28);
+  addTone(bus, now + 0.085, 930, 0.1, 0.33);
+  addTone(bus, now + 0.17, 660, 0.14, 0.26);
 }
 
 export function SoundProvider({ children }: { children: ReactNode }) {
@@ -93,23 +98,36 @@ export function SoundProvider({ children }: { children: ReactNode }) {
     getMutedSetting,
     () => false,
   );
-  const audioContextRef = useRef<AudioContext | null>(null);
+  const audioGraphRef = useRef<AudioGraph | null>(null);
   const typingVariationRef = useRef(0);
   const lastTypingSoundAtRef = useRef(0);
 
-  const getAudioContext = useCallback(() => {
-    const existing = audioContextRef.current;
-    if (existing && existing.state !== "closed") return existing;
+  const getAudioGraph = useCallback(() => {
+    const existing = audioGraphRef.current;
+    if (existing && existing.context.state !== "closed") return existing;
 
     const context = new AudioContext({ latencyHint: "interactive" });
-    audioContextRef.current = context;
-    return context;
+    // Tones are loud enough that a keystroke landing on top of an alert can
+    // sum past full scale, so everything runs through a limiter rather than
+    // connecting straight to the output and hard-clipping.
+    const bus = new DynamicsCompressorNode(context, {
+      threshold: -8,
+      knee: 6,
+      ratio: 12,
+      attack: 0.002,
+      release: 0.12,
+    });
+    bus.connect(context.destination);
+
+    const graph = { context, bus };
+    audioGraphRef.current = graph;
+    return graph;
   }, []);
 
   useEffect(() => {
     // Browsers require audio to be unlocked from a user gesture.
     const unlockAudio = () => {
-      const context = getAudioContext();
+      const { context } = getAudioGraph();
       if (context.state === "suspended") void context.resume();
     };
 
@@ -119,10 +137,10 @@ export function SoundProvider({ children }: { children: ReactNode }) {
     return () => {
       window.removeEventListener("pointerdown", unlockAudio);
       window.removeEventListener("keydown", unlockAudio);
-      const context = audioContextRef.current;
+      const context = audioGraphRef.current?.context;
       if (context && context.state !== "closed") void context.close();
     };
-  }, [getAudioContext]);
+  }, [getAudioGraph]);
 
   const toggleMuted = useCallback(() => {
     const next = !getMutedSetting();
@@ -130,10 +148,10 @@ export function SoundProvider({ children }: { children: ReactNode }) {
     window.dispatchEvent(new Event(SETTINGS_EVENT));
 
     if (!next) {
-      const context = getAudioContext();
+      const { context } = getAudioGraph();
       if (context.state === "suspended") void context.resume();
     }
-  }, [getAudioContext]);
+  }, [getAudioGraph]);
 
   const playSound = useCallback(
     (sound: ChatSound) => {
@@ -146,15 +164,15 @@ export function SoundProvider({ children }: { children: ReactNode }) {
         typingVariationRef.current = (typingVariationRef.current + 1) % 3;
       }
 
-      const context = getAudioContext();
+      const { context, bus } = getAudioGraph();
       if (context.state === "suspended") {
         void context.resume();
         return;
       }
 
-      synthesizeSound(context, sound, typingVariationRef.current);
+      synthesizeSound(bus, sound, typingVariationRef.current);
     },
-    [getAudioContext, isMuted],
+    [getAudioGraph, isMuted],
   );
 
   const value = useMemo(
