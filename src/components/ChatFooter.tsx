@@ -1,9 +1,11 @@
 "use client";
 
 import { useMotionValueEvent, useTransform } from "framer-motion";
+import { Volume2, VolumeX } from "lucide-react";
 import { useCallback, useEffect, useRef } from "react";
 import { useTheme } from "@/context/ThemeContext";
 import { useConversation } from "@/context/ConversationContext";
+import { useSound } from "@/context/SoundContext";
 import { LAYOUT } from "@/constants/layout";
 import PlayPauseButton from "@/components/PlayPauseButton";
 
@@ -15,6 +17,7 @@ function scrollDraftToEnd(viewport: HTMLDivElement | null) {
 export default function ChatFooter() {
   const { colors } = useTheme();
   const { composerDraft, isComposing } = useConversation();
+  const { isMuted, toggleMuted } = useSound();
 
   const draftRef = useRef<HTMLSpanElement>(null);
   const placeholderRef = useRef<HTMLSpanElement>(null);
@@ -96,24 +99,26 @@ export default function ChatFooter() {
           </div>
           <button
             type="button"
-            aria-label="Voice message"
+            onClick={toggleMuted}
+            aria-label={isMuted ? "Unmute chat sounds" : "Mute chat sounds"}
+            aria-pressed={isMuted}
+            title={isMuted ? "Unmute chat sounds" : "Mute chat sounds"}
             className="ml-2 shrink-0 transition-opacity hover:opacity-80 sm:ml-3"
             style={{ color: colors.muted }}
           >
-            <svg
-              className="h-5 w-5 sm:h-6 sm:w-6 lg:h-7 lg:w-7"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.75"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden
-            >
-              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
-              <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-              <line x1="12" x2="12" y1="19" y2="22" />
-            </svg>
+            {isMuted ? (
+              <VolumeX
+                className="h-5 w-5 sm:h-6 sm:w-6 lg:h-7 lg:w-7"
+                strokeWidth={1.75}
+                aria-hidden
+              />
+            ) : (
+              <Volume2
+                className="h-5 w-5 sm:h-6 sm:w-6 lg:h-7 lg:w-7"
+                strokeWidth={1.75}
+                aria-hidden
+              />
+            )}
           </button>
         </div>
       </div>

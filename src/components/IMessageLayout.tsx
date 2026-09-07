@@ -2,6 +2,7 @@
 
 import ChatFooter from "@/components/ChatFooter";
 import ChatHeader from "@/components/ChatHeader";
+import ChatSoundEffects from "@/components/ChatSoundEffects";
 import ChatThread from "@/components/ChatThread";
 import PromptGalleryModal from "@/components/PromptGalleryModal";
 import VideoPlayerModal from "@/components/VideoPlayerModal";
@@ -9,6 +10,7 @@ import { LAYOUT } from "@/constants/layout";
 import { ConversationProvider } from "@/context/ConversationContext";
 import { AutoScrollProvider } from "@/context/AutoScrollContext";
 import { ModalProvider } from "@/context/ModalContext";
+import { SoundProvider } from "@/context/SoundContext";
 import { ThemeProvider, useTheme } from "@/context/ThemeContext";
 import type { Conversation, Message } from "@/types/message";
 
@@ -39,6 +41,7 @@ function IMessageShell({ activeConversation, messages }: IMessageLayoutProps) {
           style={{ maxWidth: LAYOUT.columnMaxWidth }}
         >
           <ConversationProvider messages={messages}>
+            <ChatSoundEffects />
             <AutoScrollProvider>
               <ChatHeader
                 conversation={activeConversation}
@@ -60,9 +63,11 @@ function IMessageShell({ activeConversation, messages }: IMessageLayoutProps) {
 export default function IMessageLayout(props: IMessageLayoutProps) {
   return (
     <ThemeProvider>
-      <ModalProvider>
-        <IMessageShell {...props} />
-      </ModalProvider>
+      <SoundProvider>
+        <ModalProvider>
+          <IMessageShell {...props} />
+        </ModalProvider>
+      </SoundProvider>
     </ThemeProvider>
   );
 }
