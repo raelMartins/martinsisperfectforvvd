@@ -16,7 +16,7 @@ export default function ChatThread() {
       style={{ backgroundColor: colors.chatBg }}
     >
       <div className="flex min-h-0 flex-1 flex-col justify-end px-4 sm:px-10 md:px-16 lg:px-24">
-        <div className="mx-auto flex w-full max-w-[1400px] flex-col justify-end">
+        <div className="mx-auto flex w-full max-w-[1400px] shrink-0 flex-col justify-end">
           <div className="mb-4 shrink-0 pt-2 text-center sm:mb-6 sm:pt-3 lg:mb-8 lg:pt-4">
             <p
               className="text-sm font-normal sm:text-lg md:text-xl lg:text-2xl"
@@ -59,6 +59,11 @@ export default function ChatThread() {
             </div>
           </LayoutGroup>
         </div>
+
+        {/* Absorbs leftover height so a short thread sits under the header.
+            Collapses to 0 once the thread fills the pane, handing alignment
+            back to justify-end so older messages clip off the top. */}
+        <div className="min-h-0 flex-1" aria-hidden />
       </div>
     </section>
   );
